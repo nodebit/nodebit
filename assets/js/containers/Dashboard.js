@@ -31,6 +31,7 @@ class Dashboard extends Component {
 
   refreshDashboard() {
     io.socket.get('/dashboard/' + this.props.params.id, function(data) {
+      console.log(data)
       this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: data})
     }.bind(this))
   }

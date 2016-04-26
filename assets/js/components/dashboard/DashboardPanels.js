@@ -1,26 +1,22 @@
 import React, {Component, PropTypes} from 'react'
+import { DragDropContext } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
+
 import {Link} from 'react-router'
 
-import Chart from '../charts/Chart'
+import Panel from './Panel'
 
-export default class DashboardPanels extends Component {
+class DashboardPanels extends Component {
 
   render() {
     const {panels} = this.props
     var display_panels = panels.map(function (e, i) {
       return (
-        <div key={e.dataset.id} className="column eight wide">
-          <div className="content">
-            <div className="header">
-              {e.dataset.name}
-            </div>
-            <Chart
-              data={e.dataset.data}
-              chart={e.dataset.chart}
-              id={i}
-            />
-          </div>
-        </div>
+        <Panel
+          dataset={e.dataset}
+          id={i}
+          key={i}
+        />
       )
     })
     return (
@@ -31,3 +27,5 @@ export default class DashboardPanels extends Component {
   }
 
 }
+
+export default DragDropContext(HTML5Backend)(DashboardPanels)
