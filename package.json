@@ -1,0 +1,56 @@
+{
+  "name": "fitna",
+  "private": true,
+  "version": "0.0.0",
+  "description": "a Sails application",
+  "keywords": [],
+  "scripts": {
+    "start": "node app.js"
+  },
+  "main": "app.js",
+  "devDependencies": {
+    "babel-core": "^6.5.0",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-react-hmre": "^1.1.1",
+    "babel-register": "^6.5.0",
+    "css-loader": "^0.23.1",
+    "node-libs-browser": "^0.5.2",
+    "react-addons-test-utils": "^15.0.0",
+    "script-loader": "^0.6.1",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.9.11",
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-hot-middleware": "^2.9.1"
+  },
+  "dependencies": {
+    "codemirror": "^5.13.4",
+    "ejs": "~0.8.4",
+    "include-all": "~0.1.3",
+    "moment": "^2.13.0",
+    "mssql": "~3.1.2",
+    "node-libs-browser": "^0.5.2",
+    "papaparse": "~4.1.2",
+    "rc": "~0.5.0",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
+    "react-json-table": "0.0.3",
+    "react-router": "^2.2.4",
+    "react-redux": "^4.4.5",
+    "react-router-redux": "^4.0.2",
+    "redux-thunk": "^2.0.1",
+    "sails": "~0.11.4",
+    "sails-disk": "~0.10.0",
+    "sails-mongo": "^0.12.0",
+    "seriate": "~0.6.0",
+    "underscore": "^1.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/anonymous node/sails user/fitna.git"
+  },
+  "author": "anonymous node/sails user",
+  "license": ""
+}
