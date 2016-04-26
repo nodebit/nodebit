@@ -1,7 +1,7 @@
 # NodeBit
-* Node Business Intelligence Tools *
----
+*Node Business Intelligence Tools*
 
+---
 NodeJS based framework for pulling, transforming and displaying data.
 
 ## Currently supported:
