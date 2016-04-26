@@ -12,8 +12,6 @@ import Source from './containers/Source'
 
 import app from './reducers'
 
-import {RECIEVE_DASHBOARDS} from './actions'
-
 const store = createStore(
   app,
   applyMiddleware(routerMiddleware(browserHistory))
