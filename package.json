@@ -1,8 +1,8 @@
 {
-  "name": "fitna",
-  "private": true,
+  "name": "NodeBit",
+  "private": false,
   "version": "0.0.0",
-  "description": "a Sails application",
+  "description": "Node Business Intelligence Tools",
   "keywords": [],
   "scripts": {
     "start": "node app.js"
@@ -49,8 +49,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/anonymous node/sails user/fitna.git"
+    "url": "git://github.com/nodebit/nodebit.git"
   },
-  "author": "anonymous node/sails user",
-  "license": ""
+  "author": "NodeBit",
+  "license": "MIT"
 }
