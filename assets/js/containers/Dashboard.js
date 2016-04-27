@@ -16,6 +16,8 @@ class Dashboard extends Component {
     super(props)
     this.refreshDashboard = this.refreshDashboard.bind(this)
     this.createPanel = this.createPanel.bind(this)
+    this.deletePanel = this.deletePanel.bind(this)
+    this.updatePanel = this.updatePanel.bind(this)
     this.updateName = this.updateName.bind(this)
     this.updateDashboard = this.updateDashboard.bind(this)
   }
@@ -30,14 +32,19 @@ class Dashboard extends Component {
   }
 
   refreshDashboard() {
+    this.props.dispatch({type: "AWAITING_DASHBOARD"})
     io.socket.get('/dashboard/' + this.props.params.id, function(data) {
+      console.log(data)
       this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: data})
     }.bind(this))
   }
 
-  updateDashboard(postable) {
+  updateDashboard(postable, full_reset=false) {
     io.socket.put("/dashboard/" + this.props.params.id, postable, function (data) {
-      this.props.dispatch({type: "RECIEVE_UPDATE_DASHBOARD", dashboard: data})
+      if (full_reset)
+        this.refreshDashboard()
+      else
+        this.props.dispatch({type: "RECIEVE_UPDATE_DASHBOARD", dashboard: data})
     }.bind(this))
   }
 
@@ -47,10 +54,23 @@ class Dashboard extends Component {
 
   createPanel(data_id){
     var dash_id = this.props.params.id;
-    io.socket.post("/panel", {data: data_id, dashboard: dash_id}, function (res) {
+    io.socket.post("/panel", {data: data_id, dashboard: dash_id, style: {size: "eight"}}, function (res) {
       this.refreshDashboard()
     }.bind(this))
   }
+
+  deletePanel(panel_id) {
+    io.socket.delete("/panel/" + panel_id,function (res) {
+      this.refreshDashboard()
+    }.bind(this))
+  }
+
+  updatePanel(panel_id, postable) {
+    io.socket.put("/panel/" + panel_id, postable, function (data) {
+      this.refreshDashboard()
+    }.bind(this))
+  }
+
 
   render() {
     const {dashboard, datasets} = this.props
@@ -73,6 +93,8 @@ class Dashboard extends Component {
           </div>
           <DashboardPanels
             {...dashboard}
+            deletePanel={this.deletePanel}
+            updatePanel={this.updatePanel}
           />
         </div>
       )

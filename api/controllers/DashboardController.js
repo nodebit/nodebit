@@ -6,7 +6,7 @@ module.exports = {
           console.log(panel.data)
           Data.findOne({id: panel.data}).exec(function found(err4, data) {
             data.withData(function (fullData) {
-              callback(null, {dataset: fullData});
+              callback(null, {dataset: fullData, id: panel.id, style: panel.style});
             });
           });
         }, function(err, result) {
