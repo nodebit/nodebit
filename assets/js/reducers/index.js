@@ -15,6 +15,8 @@ function dashboard(state = {}, action) {
   switch(action.type) {
     case 'RECIEVE_DASHBOARD':
       return action.dashboard
+    case 'AWAITING_DASHBOARD':
+      return {}
     case 'RECIEVE_UPDATE_DASHBOARD':
       return Object.assign({}, state, action.dashboard)
     case 'UNMOUNT_DASHBOARD':

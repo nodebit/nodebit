@@ -5,22 +5,27 @@ import HTML5Backend from 'react-dnd-html5-backend'
 import {Link} from 'react-router'
 
 import Panel from './Panel'
+import Trash from './Trash'
 
 class DashboardPanels extends Component {
 
   render() {
-    const {panels} = this.props
-    var display_panels = panels.map(function (e, i) {
+    const {panels, deletePanel, updatePanel} = this.props
+    var display_panels = panels.map(function (e) {
       return (
         <Panel
+          id={e.id}
+          key={e.id}
           dataset={e.dataset}
-          id={i}
-          key={i}
+          style={e.style}
+          updatePanel={updatePanel}
+          deletePanel={deletePanel}
         />
       )
     })
     return (
       <div className="row">
+        <Trash/>
         {display_panels}
       </div>
     )
