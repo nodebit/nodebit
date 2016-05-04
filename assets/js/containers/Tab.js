@@ -13,6 +13,7 @@ import Trash from '../components/tab/Trash'
 import DatasetPicker from '../components/tab/DatasetPicker'
 import SingleValueForm from '../components/common/Form'
 import TabNavigation from '../components/tab/TabNavigation'
+import Filters from '../components/tab/Filters'
 
 class Tab extends Component {
 
@@ -30,6 +31,11 @@ class Tab extends Component {
     this.createPanel = this.createPanel.bind(this)
     this.deletePanel = this.deletePanel.bind(this)
     this.updatePanel = this.updatePanel.bind(this)
+
+    this.createFilter = this.createFilter.bind(this)
+    this.updateFilter = this.updateFilter.bind(this)
+    this.updateFilterName = this.updateFilterName.bind(this)
+    this.updateFilterValue = this.updateFilterValue.bind(this)
   }
 
   componentDidMount() {
@@ -126,9 +132,36 @@ class Tab extends Component {
   }
 
   updatePanel(panel_id, postable) {
-    io.socket.put("/panel/" + panel_id, postable, function (data) {
+    console.log(postable, panel_id)
+    io.socket.put("/panel/" + panel_id, postable, function (data, err) {
+      console.log(data, err)
       this.refreshTab()
     }.bind(this))
+  }
+
+
+  createFilter() {
+    var tab_id = this.props.params.id;
+    io.socket.post("/filter", {tab: tab_id, name: '', value:'' }, function (res, err) {
+      console.log(res, err)
+      this.refreshTab()
+    }.bind(this))
+  }
+
+  updateFilter(postable, id) {
+    io.socket.put("/filter/" + id, postable, function (data) {
+      this.refreshTab()
+    }.bind(this))
+  }
+
+  updateFilterName(name, id) {
+    const postable = {name: name}
+    this.updateFilter(postable, id)
+  }
+
+  updateFilterValue(value, id) {
+    const postable = {value: value}
+    this.updateFilter(postable, id)
   }
 
   render() {
@@ -142,8 +175,10 @@ class Tab extends Component {
           <Panel
             id={e.id}
             key={e.id}
-            dataset={e.dataset}
             style={e.style}
+            dataset={e.dataset}
+            filters={filters}
+            filter_parameters={e.filter_parameters}
             updatePanel={this.updatePanel}
             deletePanel={this.deletePanel}
           />
@@ -159,6 +194,12 @@ class Tab extends Component {
           />
           <SingleValueForm submit={this.updateName} initialValue={name}/>
           <button className="ui button" onClick={this.deleteTab}>Remove</button>
+          <Filters
+            filters={filters}
+            createFilter={this.createFilter}
+            updateFilterName={this.updateFilterName}
+            updateFilterValue={this.updateFilterValue}
+          />
           <DatasetPicker
             datasets={remaining_sets}
             addDataset={this.createPanel}

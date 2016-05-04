@@ -1,6 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import {DragSource} from 'react-dnd'
 
+import ParameterMapping from './ParameterMapping'
+
 import Chart from '../charts/Chart'
 import $ from 'jquery'
 
@@ -10,7 +12,7 @@ const panelSource = {
       id: props.id,
       deletePanel: props.deletePanel
    }
-  },
+ },
   endDrag(props, monitor) {
     const item = monitor.getItem()
     const dropResult = monitor.getDropResult()
@@ -30,6 +32,7 @@ class Panel extends Component {
     super(props)
 
     this.updateSize = this.updateSize.bind(this)
+    this.updateParameterFilter = this.updateParameterFilter.bind(this)
   }
 
   updateSize(e) {
@@ -37,8 +40,29 @@ class Panel extends Component {
     updatePanel(id, {style: {size: e.target.getAttribute('data-size')}})
   }
 
+  updateParameterFilter(parameter_name, filter_id) {
+    const {id, filter_parameters, updatePanel} = this.props
+    console.log("i work hard for my money")
+    if (filter_parameters) {
+      var new_filter_parameter = filter_parameters.slice(0)
+      var new_fp = true
+      new_filter_parameter.forEach(function(filter_parameter) {
+        if (filter_parameter.parameter == parameter_name) {
+          filter_parameter.filter = filter_id
+          new_fp = false
+        }
+      })
+      if (new_fp) {
+        new_filter_parameter.push({parameter: parameter_name, filter: filter_id})
+      }
+      updatePanel(id, {filter_parameters: new_filter_parameter })
+    } else {
+      updatePanel(id, {filter_parameters: [{parameter: parameter_name, filter: filter_id}] })
+    }
+  }
+
   render() {
-    const {dataset, id, style, isDragging, connectDragSource} = this.props
+    const {dataset, filter_parameters, id, style, isDragging, connectDragSource, filters} = this.props
     const class_string = "column " + style.size + " wide"
     const default_class ="ui button"
     const classArray = [default_class, default_class, default_class, default_class]
@@ -74,6 +98,12 @@ class Panel extends Component {
           <div className="header">
             <h4>{dataset.name}</h4>
           </div>
+          <ParameterMapping
+            filters={filters}
+            dataset={dataset}
+            filter_parameters={filter_parameters}
+            updateParameterFilter={this.updateParameterFilter}
+          />
           <Chart
             data={dataset.data}
             chart={dataset.chart}

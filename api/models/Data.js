@@ -16,7 +16,7 @@ module.exports = {
     source: {
       model: 'source'
     },
-    withData: function (callback) {
+    withDataAndParams: function(raw_params, callback) {
       var obj = this.toObject();
       if (obj.type == "DB" && typeof obj.sql !== "undefined") {
         Source.findOne({id: obj.source}).exec( function (err, sql_source){
@@ -28,8 +28,8 @@ module.exports = {
           	}
           }
           var params = {}
-          if (obj.parameters) {
-            params = _.object(obj.parameters.map(function (para) {
+          if (raw_params) {
+            params = _.object(raw_params.map(function (para) {
               const type_map = {
                 'int': sql.INT,
                 'varchar': sql.VARCHAR
@@ -68,6 +68,11 @@ module.exports = {
       } else {
           callback(obj);
       }
+
+    },
+    withData: function (callback) {
+      var obj = this.toObject();
+      this.withDataAndParams(obj.parameters,callback)
     }
   }
 };
