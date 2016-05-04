@@ -1,7 +1,7 @@
 module.exports = {
   attributes: {
-    dashboard: {
-      model: 'dashboard'
+    tab: {
+      model: 'tab'
     },
     data: {
       model: 'data'

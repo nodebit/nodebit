@@ -1,6 +1,21 @@
 import {combineReducers} from 'redux'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 
+function tab(state = {}, action) {
+  switch(action.type) {
+    case 'RECIEVE_TAB':
+      return action.tab
+    case 'AWAITING_TAB':
+      return {}
+    case 'RECIEVE_UPDATE_TAB':
+      return Object.assign({}, state, action.tab)
+    case 'UNMOUNT_TAB':
+      return {}
+    default:
+      return state
+  }
+}
+
 function dashboards(state = [], action) {
   switch(action.type) {
     case 'RECIEVE_DASHBOARDS':
@@ -65,6 +80,7 @@ function sources(state = [], action) {
 
 
 const app = combineReducers({
+  tab,
   dashboards,
   dashboard,
   datasets,

@@ -16,6 +16,10 @@ class Dataset extends Component {
     super(props)
     this.updateSQL = this.updateSQL.bind(this)
     this.updateDataset = this.updateDataset.bind(this)
+    this.createParameter = this.createParameter.bind(this)
+    this.updateParameter = this.updateParameter.bind(this)
+    this.removeParameter = this.removeParameter.bind(this)
+
     this.refreshDataset = this.refreshDataset.bind(this)
   }
 
@@ -50,6 +54,31 @@ class Dataset extends Component {
       this.props.dispatch({type: "RECIEVE_DATASET", dataset: data})
     }.bind(this))
   }
+
+  createParameter() {
+    const postable = {name: '', type: '', value: '' }
+    io.socket.post("/data/" + this.props.params.id + "/parameters", postable, function (data){
+      this.refreshDataset()
+    }.bind(this))
+  }
+
+  updateParameter(index, name, type, value) {
+    const parameter = { name: name, type: type, value: value }
+    var new_parameters = this.props.dataset.parameters.slice(0)
+    new_parameters[index] = parameter
+    const postable = { parameters: new_parameters }
+    this.updateDataset(postable, true)
+    this.props.dispatch({type: "AWAITING_DATASET"})
+  }
+
+  removeParameter(index) {
+    var new_parameters = this.props.dataset.parameters.slice(0)
+    new_parameters.splice(index, 1)
+    const postable = { parameters: new_parameters }
+    this.updateDataset(postable, true)
+    this.props.dispatch({type: "AWAITING_DATASET"})
+  }
+
 
   render() {
     const {dataset, sources} = this.props
@@ -90,6 +119,9 @@ class Dataset extends Component {
                 {...dataset}
                 sources={sources}
                 updateDataset={this.updateDataset}
+                createParameter={this.createParameter}
+                updateParameter={this.updateParameter}
+                removeParameter={this.removeParameter}
               />
             </div>
             <div className="six wide column">

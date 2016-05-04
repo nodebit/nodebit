@@ -4,6 +4,7 @@ import moment from 'moment'
 
 import SingleValueForm from '../common/Form'
 import SourceDropdown from './SourceDropdown'
+import DatasetParameters from './DatasetParameters'
 
 export default class DatasetInformation extends Component {
 
@@ -24,8 +25,9 @@ export default class DatasetInformation extends Component {
     this.props.updateDataset(postable, true)
   }
 
+
   render() {
-    const {name, data, id, updatedAt, createdAt, url, type, changeType, sources, source} = this.props
+    const {name, data, id, updatedAt, createParameter, updateParameter, removeParameter, parameters, createdAt, url, type, changeType, sources, source} = this.props
     return (
       <div>
         <h1 className="ui header">{name}</h1>
@@ -43,6 +45,14 @@ export default class DatasetInformation extends Component {
             <div className="item"><strong>Updated: </strong>{updatedAt}</div>
             <div className="item"><strong>Added: </strong>{createdAt}</div>
           </div>
+        </div>
+        <div className="ui attached segment">
+          <DatasetParameters
+            createParameter={createParameter}
+            updateParameter={updateParameter}
+            removeParameter={removeParameter}
+            parameters={parameters}
+          />
         </div>
       </div>
     )

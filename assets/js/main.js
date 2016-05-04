@@ -9,6 +9,7 @@ import Home from './containers/Home'
 import Dataset from './containers/Dataset'
 import Dashboard from './containers/Dashboard'
 import Source from './containers/Source'
+import Tab from './containers/Tab'
 
 import app from './reducers'
 
@@ -23,9 +24,10 @@ ReactDOM.render((
   <Provider store={store}>
     <Router history={browserHistory}>
       <Route path="/" component={Home}/>
+      <Route path="/source/:id" component={Source}/>
       <Route path="/dataset/:id" component={Dataset}/>
       <Route path="/dashboard/:id" component={Dashboard}/>
-      <Route path="/source/:id" component={Source}/>
+      <Route path="/tab/:id" component={Tab}/>
     </Router>
   </Provider>
 ), document.getElementById('content'))

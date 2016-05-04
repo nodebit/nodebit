@@ -1,7 +1,10 @@
 #content {
   padding: 20px;
 }
-
+.panel {
+  margin: 10px 0;
+  border: 1px solid grey;
+}
 .fullPlus {
   font-size: 28px !important;
   text-align: center;

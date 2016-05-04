@@ -89,7 +89,18 @@ module.exports = {
 					});
 				});
 			});
-
+	},
+	createParameter: function (req, res) {
+			console.log(req.body);
+			Data.findOne(req.params.id).exec(function (err, dataset) {
+				const new_parameter = { name: '', value: '', type: '' }
+				if (typeof dataset.parameters !== 'undefined') {
+			   dataset.parameters.push(new_parameter)
+			 } else {
+			   dataset.parameters = [new_parameter]
+			 }
+		   dataset.save(function (err, dataset) { res.ok({}) })
+		 })
 	},
 	create: function (req, res) {
 		var Model = actionUtil.parseModel(req);

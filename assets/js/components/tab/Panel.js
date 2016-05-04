@@ -64,17 +64,15 @@ class Panel extends Component {
 
     return connectDragSource(
       <div key={id} className={class_string} style={{ opacity: isDragging ? 0.5 : 1 }}>
-        <div className="ui attached header top">
-          {dataset.name}
+        <div className="panel">
           <div className="ui tiny basic buttons sizing right">
             <div className={classArray[0]} onClick={this.updateSize} data-size="four">|</div>
             <div className={classArray[1]} onClick={this.updateSize} data-size="eight">|</div>
             <div className={classArray[2]} onClick={this.updateSize} data-size="twelve">|</div>
             <div className={classArray[3]} onClick={this.updateSize} data-size="sixteen">|</div>
           </div>
-        </div>
-        <div className="ui attached segment bottom">
           <div className="header">
+            <h4>{dataset.name}</h4>
           </div>
           <Chart
             data={dataset.data}
