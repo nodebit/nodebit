@@ -60,7 +60,7 @@ class Home extends Component {
   }
 
   createDashboard() {
-    io.socket.post("/dashboard", { panels: [] }, function (r,p) {
+    io.socket.post("/dashboard", { tabs: [] }, function (r,p) {
       if (p.statusCode == 201) {
         console.log("should redirect")
         this.props.dispatch(push("/dashboard/" + r.id))

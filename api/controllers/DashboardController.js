@@ -1,21 +1,13 @@
 module.exports = {
   findRecord: function(req, res) {
+    console.log("this is the id", req.param('id'))
     Dashboard.findOne({id: req.param('id')}).exec(function found(err, record) {
-      Panel.find({dashboard: req.param('id')}).exec( function found(err2, panels) {
-        async.map(panels, function(panel, callback) {
-          console.log(panel.data)
-          Data.findOne({id: panel.data}).exec(function found(err4, data) {
-            data.withData(function (fullData) {
-              callback(null, {dataset: fullData, id: panel.id, style: panel.style});
-            });
-          });
-        }, function(err, result) {
-          record.panels = result;
-    			res.ok(record);
-        });
 
-      });
-
+      Tab.find({dashboard: req.param('id')}).exec(function found(err, tabs) {
+        console.log(err)
+        record.tabs = tabs
+        res.ok(record)
+      })
     });
   }
 }

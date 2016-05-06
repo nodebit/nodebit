@@ -2,24 +2,19 @@ require('script!../dependencies/sails.io.js');
 
 import React, {Component, PropTypes} from 'react'
 import {Link} from 'react-router'
+import {push} from 'react-router-redux'
 import {connect} from 'react-redux'
 
-import SingleValueForm from '../components/common/Form'
-import DashboardPanels from '../components/dashboard/DashboardPanels'
-import DatasetPicker from '../components/dashboard/DatasetPicker'
-
 import _ from 'underscore'
+
+import Tab from './Tab'
 
 class Dashboard extends Component {
 
   constructor(props) {
     super(props)
+
     this.refreshDashboard = this.refreshDashboard.bind(this)
-    this.createPanel = this.createPanel.bind(this)
-    this.deletePanel = this.deletePanel.bind(this)
-    this.updatePanel = this.updatePanel.bind(this)
-    this.updateName = this.updateName.bind(this)
-    this.updateDashboard = this.updateDashboard.bind(this)
   }
 
   componentWillMount() {
@@ -27,8 +22,23 @@ class Dashboard extends Component {
   }
 
   componentWillUnmount() {
-    console.log("shutting down");
+    console.log("blow up dashboard object")
     this.props.dispatch({type: "UNMOUNT_DASHBOARD"})
+  }
+
+  componentDidUpdate(){
+    const {dashboard} = this.props
+    if (!_.isEmpty(dashboard)) {
+      if (dashboard.tabs.length == 0) {
+        var dash_id = this.props.params.id
+        io.socket.post("/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
+          this.props.dispatch(push("/tab/" + res.id))
+        }.bind(this))
+      } else {
+        var tab_id = dashboard.tabs[0].id
+        this.props.dispatch(push("/tab/" + tab_id))
+      }
+    }
   }
 
   refreshDashboard() {
@@ -39,76 +49,15 @@ class Dashboard extends Component {
     }.bind(this))
   }
 
-  updateDashboard(postable, full_reset=false) {
-    io.socket.put("/dashboard/" + this.props.params.id, postable, function (data) {
-      if (full_reset)
-        this.refreshDashboard()
-      else
-        this.props.dispatch({type: "RECIEVE_UPDATE_DASHBOARD", dashboard: data})
-    }.bind(this))
-  }
-
-  updateName(name) {
-    this.updateDashboard({name: name})
-  }
-
-  createPanel(data_id){
-    var dash_id = this.props.params.id;
-    io.socket.post("/panel", {data: data_id, dashboard: dash_id, style: {size: "eight"}}, function (res) {
-      this.refreshDashboard()
-    }.bind(this))
-  }
-
-  deletePanel(panel_id) {
-    io.socket.delete("/panel/" + panel_id,function (res) {
-      this.refreshDashboard()
-    }.bind(this))
-  }
-
-  updatePanel(panel_id, postable) {
-    io.socket.put("/panel/" + panel_id, postable, function (data) {
-      this.refreshDashboard()
-    }.bind(this))
-  }
-
-
   render() {
-    const {dashboard, datasets} = this.props
-    var block
-    if (!_.isEmpty(dashboard)) {
-      // Pull only the datasets that haven't been used
-      const used = dashboard.panels.map((e) => e.dataset.id )
-      const remaining_sets = datasets.filter((e) => used.indexOf(e.id) == -1 )
-      block = (
-        <div className="ui grid">
-          <div className="row">
-            <div className="column wide sixteen">
-              <h1>{dashboard.name}</h1>
-              <SingleValueForm submit={this.updateName}/>
-              <DatasetPicker
-                datasets={remaining_sets}
-                addDataset={this.createPanel}
-              />
-            </div>
-          </div>
-          <DashboardPanels
-            {...dashboard}
-            deletePanel={this.deletePanel}
-            updatePanel={this.updatePanel}
-          />
-        </div>
-      )
-    } else {
-      block = (
+    return (
         <div className="ui active dimmer">
           <div className="ui loader"></div>
         </div>
       )
-    }
-    return block
   }
 
 }
 
 // so this is bad because now we have a render every time anything in the state changes
-export default connect(state => ({ dashboard: state.dashboard, datasets: state.datasets}))(Dashboard)
+export default connect(state => ({ dashboard: state.dashboard }))(Dashboard)

@@ -1,7 +1,7 @@
 
 module.exports = {
-  panels: {
-    collection: 'panel',
+  tabs: {
+    collection: 'tab',
     via: 'dashboard'
   }
 }
