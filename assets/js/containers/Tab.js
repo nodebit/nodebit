@@ -34,6 +34,7 @@ class Tab extends Component {
 
     this.createFilter = this.createFilter.bind(this)
     this.updateFilter = this.updateFilter.bind(this)
+    this.removeFilter = this.removeFilter.bind(this)
     this.updateFilterName = this.updateFilterName.bind(this)
     this.updateFilterValue = this.updateFilterValue.bind(this)
   }
@@ -147,6 +148,12 @@ class Tab extends Component {
     }.bind(this))
   }
 
+  removeFilter(filter_id) {
+    io.socket.delete("/filter/" + filter_id, function () {
+      this.refreshTab()
+    }.bind(this))
+  }
+
   updateFilter(postable, id) {
     io.socket.put("/filter/" + id, postable, function (data) {
       this.refreshTab()
@@ -196,6 +203,7 @@ class Tab extends Component {
           <Filters
             filters={filters}
             createFilter={this.createFilter}
+            removeFilter={this.removeFilter}
             updateFilterName={this.updateFilterName}
             updateFilterValue={this.updateFilterValue}
           />

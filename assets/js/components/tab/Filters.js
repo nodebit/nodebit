@@ -7,6 +7,13 @@ export default class Filters extends Component {
 
   constructor(props) {
     super(props)
+
+    this.removeFilter = this.removeFilter.bind(this)
+  }
+
+  removeFilter(e) {
+    e.preventDefault()
+    this.props.removeFilter(e.target.id)
   }
 
   render() {
@@ -28,6 +35,9 @@ export default class Filters extends Component {
               initialValue={filter.value}
               submit={updateFilterValue}
             />
+          </div>
+          <div className="column four wide">
+            <button className="ui button" id={filter.id} onClick={this.removeFilter}>Remove Filter</button>
           </div>
         </div>
     ))
