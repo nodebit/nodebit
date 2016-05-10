@@ -5,6 +5,7 @@ import ParameterMapping from './ParameterMapping'
 
 import Chart from '../charts/Chart'
 import $ from 'jquery'
+import _ from 'underscore'
 
 const panelSource = {
   beginDrag(props) {
@@ -42,21 +43,39 @@ class Panel extends Component {
 
   updateParameterFilter(parameter_name, filter_id) {
     const {id, filter_parameters, updatePanel} = this.props
-    console.log("i work hard for my money")
+
+    // if the array already has live working filters
     if (filter_parameters) {
+
+      // make a copy of the filter params
       var new_filter_parameter = filter_parameters.slice(0)
       var new_fp = true
-      new_filter_parameter.forEach(function(filter_parameter) {
-        if (filter_parameter.parameter == parameter_name) {
-          filter_parameter.filter = filter_id
+      // empty filter id does an unmap which removes the filter parameter
+      if (filter_id == '') {
+          new_filter_parameter = _.reject(new_filter_parameter, function(filter_parameter) {
+            return filter_parameter.parameter == parameter_name
+          })
           new_fp = false
-        }
-      })
+
+      // otherwise we need to go through and update the filter
+      } else {
+        new_filter_parameter.forEach(function(filter_parameter) {
+          if (filter_parameter.parameter == parameter_name) {
+            filter_parameter.filter = filter_id
+            new_fp = false
+          }
+        })
+      }
+
+      // if the filter parameter doesn't exist yet add it
       if (new_fp) {
         new_filter_parameter.push({parameter: parameter_name, filter: filter_id})
       }
+
+      // perform an update
       updatePanel(id, {filter_parameters: new_filter_parameter })
     } else {
+      // add the first filter parameter
       updatePanel(id, {filter_parameters: [{parameter: parameter_name, filter: filter_id}] })
     }
   }

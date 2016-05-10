@@ -98,9 +98,8 @@ class Tab extends Component {
   refreshTab() {
     console.log(this.props.params.id)
     io.socket.get('/tab/' + this.props.params.id, function(tab_data) {
-      console.log(tab_data)
-      console.log("pushing into socket for dashboard", tab_data.dashboard)
-      io.socket.get('/dashboard/' + tab_data.dashboard, function(dash_data) {
+      var dashboard_id = tab_data.dashboard.id
+      io.socket.get('/dashboard/' + dashboard_id , function(dash_data) {
         console.log("pushing to reducer", dash_data, tab_data)
         this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: dash_data})
         this.props.dispatch({type: "RECIEVE_TAB", tab: tab_data})
