@@ -34,6 +34,7 @@ class Tab extends Component {
 
     this.createFilter = this.createFilter.bind(this)
     this.updateFilter = this.updateFilter.bind(this)
+    this.removeFilter = this.removeFilter.bind(this)
     this.updateFilterName = this.updateFilterName.bind(this)
     this.updateFilterValue = this.updateFilterValue.bind(this)
   }
@@ -98,9 +99,8 @@ class Tab extends Component {
   refreshTab() {
     console.log(this.props.params.id)
     io.socket.get('/tab/' + this.props.params.id, function(tab_data) {
-      console.log(tab_data)
-      console.log("pushing into socket for dashboard", tab_data.dashboard)
-      io.socket.get('/dashboard/' + tab_data.dashboard, function(dash_data) {
+      var dashboard_id = tab_data.dashboard.id
+      io.socket.get('/dashboard/' + dashboard_id , function(dash_data) {
         console.log("pushing to reducer", dash_data, tab_data)
         this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: dash_data})
         this.props.dispatch({type: "RECIEVE_TAB", tab: tab_data})
@@ -144,6 +144,12 @@ class Tab extends Component {
     var tab_id = this.props.params.id;
     io.socket.post("/filter", {tab: tab_id, name: '', value:'' }, function (res, err) {
       console.log(res, err)
+      this.refreshTab()
+    }.bind(this))
+  }
+
+  removeFilter(filter_id) {
+    io.socket.delete("/filter/" + filter_id, function () {
       this.refreshTab()
     }.bind(this))
   }
@@ -197,6 +203,7 @@ class Tab extends Component {
           <Filters
             filters={filters}
             createFilter={this.createFilter}
+            removeFilter={this.removeFilter}
             updateFilterName={this.updateFilterName}
             updateFilterValue={this.updateFilterValue}
           />

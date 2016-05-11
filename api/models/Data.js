@@ -46,7 +46,6 @@ module.exports = {
             }))
           }
 
-          console.log(sql_source)
           var db_conf = _.extend(defaults, sql_source)
           db_conf.name = obj.source
           sql.addConnection(db_conf)
@@ -74,5 +73,8 @@ module.exports = {
       var obj = this.toObject();
       this.withDataAndParams(obj.parameters,callback)
     }
+  }, afterDestroy: function(destroyedRecords, cb) {
+    Panel.destroy({ data: _.pluck(destroyedRecords, 'id') }).exec(cb)
   }
+
 };

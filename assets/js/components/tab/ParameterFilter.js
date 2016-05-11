@@ -25,6 +25,7 @@ export default class ParameterFilter extends Component {
       <form onSubmit={this.updateParameterFilter}>
         <div>{parameter.name}</div>
         <select ref="filter" defaultValue={setFilter}>
+          <option value=''></option>
           {avaliable_filters}
         </select>
         <input type="submit" className="ui field" value="Map"/>
