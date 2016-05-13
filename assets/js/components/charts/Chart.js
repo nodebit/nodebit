@@ -44,14 +44,7 @@ export default class Chart extends Component {
     }
 
     var layout = {
-      showlegend: newChart.length > 1,
-      margin:{
-        r:0,
-        b:200,
-        pad:10,
-        l:100,
-        t:0
-      }
+      showlegend: newChart.length > 1
     }
     var settings = {
       displayModeBar: false

@@ -20,6 +20,9 @@ class Tab extends Component {
   constructor(props) {
     super(props)
 
+    this.togglePreview = this.togglePreview.bind(this)
+    this.toggleFilters = this.toggleFilters.bind(this)
+
     this.switchTab = this.switchTab.bind(this)
     this.refreshTab = this.refreshTab.bind(this)
 
@@ -69,6 +72,22 @@ class Tab extends Component {
   componentWillUnmount() {
     console.log("shutting down")
     this.props.dispatch({type: "UNMOUNT_TAB"})
+  }
+
+  togglePreview() {
+    const {dashboard_settings} = this.props
+    if (dashboard_settings.preview)
+      this.props.dispatch({type: "STOP_PREVIEW"})
+    else
+      this.props.dispatch({type: "START_PREVIEW"})
+  }
+
+  toggleFilters() {
+    const {dashboard_settings} = this.props
+    if (dashboard_settings.filters)
+      this.props.dispatch({type: "CLOSE_FILTERS"})
+    else
+      this.props.dispatch({type: "OPEN_FILTERS"})
   }
 
   updateTab(postable, full_reset=false) {
@@ -172,7 +191,7 @@ class Tab extends Component {
 
   render() {
     if (!_.isEmpty(this.props.tab)) {
-      const {dashboard, datasets, tab} = this.props
+      const {dashboard, datasets, tab, dashboard_settings} = this.props
       const {panels, name, filters} = tab
       const used = panels.map((e) => e.dataset.id )
       const remaining_sets = datasets.filter((e) => used.indexOf(e.id) == -1 )
@@ -185,39 +204,51 @@ class Tab extends Component {
             dataset={e.dataset}
             filters={filters}
             filter_parameters={e.filter_parameters}
+            dashboard_settings={dashboard_settings}
             updatePanel={this.updatePanel}
             deletePanel={this.deletePanel}
           />
         )
       }.bind(this))
+      var editable;
+      if (!dashboard_settings.preview) {
+        editable = (
+          <div>
+            <SingleValueForm submit={this.updateName} initialValue={name}/>
+            <button className="ui button" onClick={this.deleteTab}>Remove</button>
+            <DatasetPicker
+              datasets={remaining_sets}
+              addDataset={this.createPanel}
+            />
+            <Trash/>
+          </div>
+        )
+      }
       return (
-        <div>
+        <div className={dashboard_settings.preview ? "production" : '' }>
           <TabNavigation
             dashboard={dashboard}
             tab={tab}
             createTab={this.createTab}
             switchTab={this.switchTab}
+            togglePreview={this.togglePreview}
+            dashboard_settings={dashboard_settings}
           />
-          <SingleValueForm submit={this.updateName} initialValue={name}/>
-          <button className="ui button" onClick={this.deleteTab}>Remove</button>
+          { editable }
           <Filters
             filters={filters}
+            dashboard_settings={dashboard_settings}
+            toggleFilters={this.toggleFilters}
             createFilter={this.createFilter}
             removeFilter={this.removeFilter}
             updateFilterName={this.updateFilterName}
             updateFilterValue={this.updateFilterValue}
           />
-          <DatasetPicker
-            datasets={remaining_sets}
-            addDataset={this.createPanel}
-          />
-          <Trash/>
           <div className="ui grid">
             {display_panels}
           </div>
         </div>
       )
-
     } else {
       return (
         <div className="ui active dimmer">
@@ -229,4 +260,4 @@ class Tab extends Component {
 
 }
 
-export default connect(state => ({ tab: state.tab, datasets: state.datasets, dashboard: state.dashboard }))(DragDropContext(HTML5Backend)(Tab))
+export default connect(state => ({ tab: state.tab, datasets: state.datasets, dashboard: state.dashboard, dashboard_settings: state.dashboard_settings }))(DragDropContext(HTML5Backend)(Tab))
