@@ -1,14 +1,30 @@
-#content {
+#content > div {
   padding: 20px;
 }
 .panel {
   margin: 10px 0;
   border: 1px solid grey;
 }
+.breatheBottom {
+  margin-bottom: 15px;
+}
+.ui.toggle.checkbox input {
+  width: 6.5rem;
+  height: 3.5rem;
+}
+.darken {
+  background:rgb(240, 240, 240);
+}
+.production {
+  background: #FCFCFC;
+}
 .fullPlus {
   font-size: 28px !important;
   text-align: center;
   cursor: pointer !important;
+}
+.menu.large.ui {
+  font-weight: bold !important;
 }
 .paddedContent {
   padding: 20px;
