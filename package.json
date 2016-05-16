@@ -23,7 +23,8 @@
     "webpack": "^1.9.11",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-dev-server": "^1.14.1",
-    "webpack-hot-middleware": "^2.9.1"
+    "webpack-hot-middleware": "^2.9.1",
+    "write-file-webpack-plugin": "^3.1.8"
   },
   "dependencies": {
     "codemirror": "^5.13.4",
@@ -33,7 +34,9 @@
     "moment": "^2.13.0",
     "mssql": "~3.1.2",
     "node-libs-browser": "^0.5.2",
+    "node-postgres-named": "^2.4.0",
     "papaparse": "~4.1.2",
+    "pg": "^4.5.5",
     "rc": "~0.5.0",
     "react": "^15.0.1",
     "react-dnd": "^2.1.4",

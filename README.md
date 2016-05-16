@@ -5,7 +5,7 @@ NodeJS based framework for pulling, transforming and displaying data.
 ## Currently supported:
 
 ### Sources:
-- SQL Server
+- Postgres 
 
 ### Source Transformations:
 - SQL
@@ -15,6 +15,7 @@ NodeJS based framework for pulling, transforming and displaying data.
 
 ### Outputs:
 - Plotly JS
+- Statistic (label + value)
 
 ## Setup
 

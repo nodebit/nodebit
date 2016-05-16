@@ -4,6 +4,8 @@ import {DragSource} from 'react-dnd'
 import ParameterMapping from './ParameterMapping'
 
 import Chart from '../charts/Chart'
+import Statistic from '../charts/Stat'
+
 import $ from 'jquery'
 import _ from 'underscore'
 
@@ -135,6 +137,23 @@ class Panel extends Component {
         { resize_controls }
       </div>
     )
+    var output;
+    if (dataset.output == "chart")  {
+      output =  (
+        <Chart
+          data={dataset.data}
+          chart={dataset.chart}
+          id={id}
+        />
+      )
+    } else if (dataset.output == "statistic") {
+      output = (
+        <Statistic
+          data={dataset.data}
+          statistic={dataset.statistic}
+        />
+      )
+    }
 
     return connectDragSource(
       <div key={id} className={class_string} style={{ opacity: isDragging ? 0.5 : 1 }}>
@@ -144,11 +163,7 @@ class Panel extends Component {
               <h4>{dataset.name}</h4>
             </div>
             { options }
-            <Chart
-              data={dataset.data}
-              chart={dataset.chart}
-              id={id}
-            />
+            { output }
           </div>
         </div>
       </div>
