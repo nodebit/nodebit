@@ -85,8 +85,10 @@ class Home extends Component {
   createSource() {
     io.socket.post("/source", {}, function (r,p) {
       if (p.statusCode == 201) {
-        console.log("should redirect")
-        this.props.dispatch(push("/source/" + r.id))
+        io.socket.get("/source", {}, function (data) {
+          this.props.dispatch({ type: 'RECIEVE_ALL_SOURCES', sources: data})
+          this.props.dispatch(push("/source/" + r.id))
+        }.bind(this))
       }
     }.bind(this))
   }

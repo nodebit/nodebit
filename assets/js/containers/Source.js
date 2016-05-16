@@ -71,6 +71,6 @@ class Source extends Component {
 }
 
 export default connect(function(state, ownProps) {
-  const source = state.sources.find((source) => source.id = ownProps.params.id)
+  const source = state.sources.find((source) => source.id == ownProps.params.id)
   return { source: source }
 })(Source)

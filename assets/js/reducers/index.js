@@ -41,6 +41,21 @@ function dashboard(state = {}, action) {
   }
 }
 
+function dashboard_settings(state={preview: false, filters: false}, action) {
+  switch(action.type) {
+      case 'START_PREVIEW':
+        return Object.assign({}, state, {preview: true })
+      case 'STOP_PREVIEW':
+        return Object.assign({}, state, {preview: false })
+      case 'OPEN_FILTERS':
+        return Object.assign({}, state, {filters: true })
+      case 'CLOSE_FILTERS':
+        return Object.assign({}, state, {filters: false })
+      default:
+        return state
+  }
+}
+
 function datasets(state = [], action) {
   switch(action.type) {
     case 'RECIEVE_ALL_DATASETS':
@@ -83,6 +98,7 @@ const app = combineReducers({
   tab,
   dashboards,
   dashboard,
+  dashboard_settings,
   datasets,
   dataset,
   sources,

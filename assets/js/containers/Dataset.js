@@ -8,7 +8,7 @@ import _ from 'underscore'
 
 import DatasetInformation from '../components/dataset/DatasetInformation'
 import DatasetData from '../components/dataset/DatasetData'
-import DatasetChart from '../components/dataset/DatasetChart'
+import DatasetOutput from '../components/dataset/DatasetOutput'
 
 class Dataset extends Component {
 
@@ -82,17 +82,18 @@ class Dataset extends Component {
 
   render() {
     const {dataset, sources} = this.props
-    console.log(dataset)
     var block
     if (!_.isEmpty(dataset)) {
-      var charts;
+      var output;
       if (typeof dataset.data !== "undefined" && dataset.data.length > 0) {
-        charts = (
-          <DatasetChart
-            {...dataset}
-            refreshDataset={this.refreshDataset}
-            updateDataset={this.updateDataset}
-          />
+        output = (
+          <div>
+            <DatasetOutput
+              dataset={dataset}
+              refreshDataset={this.refreshDataset}
+              updateDataset={this.updateDataset}
+            />
+          </div>
         )
       }
       var error;
@@ -131,7 +132,7 @@ class Dataset extends Component {
               />
             </div>
             <div className="seven wide column">
-              {charts}
+              {output}
             </div>
           </div>
         </div>
