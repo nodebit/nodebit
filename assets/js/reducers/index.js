@@ -93,6 +93,15 @@ function sources(state = [], action) {
   }
 }
 
+function source(state = {}, action) {
+  switch(action.type) {
+    case 'RECIEVE_SOURCE':
+      return action.source
+    default:
+      return state
+  }
+}
+
 
 const app = combineReducers({
   tab,
@@ -102,6 +111,7 @@ const app = combineReducers({
   datasets,
   dataset,
   sources,
+  source,
   routing: routerReducer
 })
 

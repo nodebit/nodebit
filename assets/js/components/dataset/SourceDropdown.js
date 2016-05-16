@@ -16,12 +16,13 @@ export default class SourceDropdown extends Component {
   render() {
     const {sources, source} = this.props
     const options = sources.map(source => (
-      <option value={source.id}>{source.host}</option>
+      <option value={source.id}>{source.name}</option>
     ))
     return (
       <form className="ui form" onSubmit={this.submit}>
         <div className="inline fields">
           <select ref="source" defaultValue={source}>
+            <option value=""></option>
             {options}
           </select>
           <input type="submit" value="Save" className="ui button"/>

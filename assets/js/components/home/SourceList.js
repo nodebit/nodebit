@@ -21,8 +21,11 @@ export default class SourceList extends Component {
       return (
         <div className="card" key={e.id}>
           <div className="ui content segments">
-            <div className="header">{e.database} - {e.host}</div>
-            <div className="meta">{moment(e.updatedAt).fromNow()} |  <a id={e.id} onClick={this.deleteSource}>Delete</a></div>
+            <div className="header">{e.name}</div>
+            <div className="meta">{moment(e.updatedAt).fromNow()}
+              | <a id={e.id} onClick={this.deleteSource}>Delete</a>
+              <a className="ui blue tiny label">{e.type}</a>
+            </div>
           </div>
           <Link to={`/source/${e.id}`} id={e.id} className="ui button primary attached bottom">View Dataset</Link>
         </div>

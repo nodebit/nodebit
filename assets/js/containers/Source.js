@@ -4,6 +4,9 @@ import React, {Component, PropTypes} from 'react'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
 
+import Postgres from '../components/source/plugins/Postgres'
+import URL from '../components/source/plugins/URL'
+
 import _ from 'underscore'
 
 class Source extends Component {
@@ -12,52 +15,65 @@ class Source extends Component {
     super(props)
 
     this.updateSource = this.updateSource.bind(this)
+    this.setSourceType = this.setSourceType.bind(this)
+    this.getSource = this.getSource.bind(this)
   }
 
-  updateSource(e) {
-    e.preventDefault()
-    const postable = {
-      user: this.refs.user.value,
-      password: this.refs.password.value,
-      host: this.refs.host.value,
-      database: this.refs.database.value
-    }
-    io.socket.put("/source/" + this.props.params.id, postable, function (data) {
+  componentWillUnmount() {
+    console.log("relieve source")
+  }
+
+  componentDidMount() {
+    this.getSource()
+  }
+
+  getSource() {
+    io.socket.get("/source/" + this.props.params.id, function (data) {
       console.log(data)
+      this.props.dispatch({type: 'RECIEVE_SOURCE', source: data})
     }.bind(this))
+  }
+
+  updateSource(postable) {
+    io.socket.put("/source/" + this.props.params.id, postable, function (data) {
+      this.getSource()
+    }.bind(this))
+  }
+
+  setSourceType(e) {
+    e.preventDefault()
+    const postable = {type: this.refs.sourceType.value}
+    this.updateSource(postable)
   }
 
   render() {
     const {source} = this.props
     var block
     if (!_.isEmpty(source)) {
-      block = (
-        <div className="ui grid">
-          <div className="row">
-            <div className="column four wide">
-              <form className="ui form" onSubmit={this.updateSource}>
-                <div className="field">
-                  <label>User: </label>
-                  <input type="text" ref="user" defaultValue={source.user}/>
-                </div>
-                <div className="field">
-                  <label>Password: </label>
-                  <input type="text" ref="password" defaultValue={source.password}/>
-                </div>
-                <div className="field">
-                  <label>Host: </label>
-                  <input type="text" ref="host" defaultValue={source.host}/>
-                </div>
-                <div className="field">
-                  <label>Database: </label>
-                  <input type="text" ref="database" defaultValue={source.database}/>
-                </div>
-                <button className="ui button" type="submit">Submit</button>
+      if (typeof source.type == "undefined") {
+        block = (
+          <div className="ui grid">
+            <div className="row">
+              <form onSubmit={this.setSourceType}>
+                <select ref="sourceType">
+                  <option value="sql-server">SQL Server</option>
+                  <option value="postgres">PostgreSQL</option>
+                  <option value="url">URL</option>
+                </select>
+                <input type="submit" className="ui button"/>
               </form>
             </div>
           </div>
-        </div>
-      )
+        )
+      } else {
+        if (source.type == "postgres") {
+          block = (<Postgres source={source} updateSource={this.updateSource}/>)
+        } else if (source.type == "sql-server") {
+          block = (<Postgres source={source} updateSource={this.updateSource}/>)
+        } else if (source.type == "url") {
+          block = (<URL source={source} updateSource={this.updateSource}/>)
+        }
+      }
     } else {
       block = (
         <div className="ui active dimmer">
@@ -71,6 +87,5 @@ class Source extends Component {
 }
 
 export default connect(function(state, ownProps) {
-  const source = state.sources.find((source) => source.id == ownProps.params.id)
-  return { source: source }
+  return { source: state.source }
 })(Source)
