@@ -64,3 +64,11 @@
 .buttons.sizing .button {
   padding: 4px;
 }
+.textEditor {
+  font-family: 'monospace';
+  border: none;
+  outline: none;
+  background: #2F2F2F;
+  color: white;
+  padding: 10px;
+}
