@@ -1,10 +1,10 @@
-require('script!../dependencies/sails.io.js');
-
 import React, {Component, PropTypes} from 'react'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
 
 import _ from 'underscore'
+
+import {server} from '../server'
 
 import DatasetInformation from '../components/dataset/DatasetInformation'
 import DatasetData from '../components/dataset/DatasetData'
@@ -34,13 +34,13 @@ class Dataset extends Component {
 
   refreshDataset() {
     this.props.dispatch({type: "AWAITING_DATASET"})
-    io.socket.get('/data/' + this.props.params.id, function(data) {
+    server(this.props, 'get', '/data/' + this.props.params.id, {}, function(data) {
       this.props.dispatch({type: "RECIEVE_DATASET", dataset: data});
     }.bind(this))
   }
 
   updateDataset(postable, full_reset=false) {
-    io.socket.put("/data/" + this.props.params.id, postable, function (data) {
+    server(this.props, 'put', "/data/" + this.props.params.id, postable, function (data) {
       if (full_reset)
         this.refreshDataset()
       else
@@ -50,14 +50,14 @@ class Dataset extends Component {
 
   updateSQL(sql) {
     const postable = {sql: sql};
-    io.socket.put("/data/" + this.props.params.id + "/sql", postable, function (data) {
+    server(this.props, 'put', "/data/" + this.props.params.id + "/sql", postable, function (data) {
       this.props.dispatch({type: "RECIEVE_DATASET", dataset: data})
     }.bind(this))
   }
 
   createParameter() {
     const postable = {name: '', type: '', value: '' }
-    io.socket.post("/data/" + this.props.params.id + "/parameters", postable, function (data){
+    server(this.props, 'post', "/data/" + this.props.params.id + "/parameters", postable, function (data){
       this.refreshDataset()
     }.bind(this))
   }
@@ -150,4 +150,4 @@ class Dataset extends Component {
 }
 
 // so this is bad because now we have a render every time anything in the state changes
-export default connect(state => ({ dataset: state.dataset, sources: state.sources }))(Dataset)
+export default connect(state => ({ auth:state.auth, dataset: state.dataset, sources: state.sources }))(Dataset)

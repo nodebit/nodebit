@@ -7,6 +7,7 @@ import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
 import _ from 'underscore'
+import {server} from '../server'
 
 import Panel from '../components/tab/Panel'
 import Trash from '../components/tab/Trash'
@@ -91,7 +92,7 @@ class Tab extends Component {
   }
 
   updateTab(postable, full_reset=false) {
-    io.socket.put("/tab/" + this.props.params.id, postable, function (data) {
+    server(this.props, 'put', "/tab/" + this.props.params.id, postable, function (data) {
       if (full_reset)
         this.refreshTab()
       else
@@ -106,7 +107,7 @@ class Tab extends Component {
 
   deleteTab() {
     console.log("giving it a whirl on the deleting")
-    io.socket.delete("/tab/" + this.props.params.id, function () {
+    server(this.props, 'delete', "/tab/" + this.props.params.id, {}, function () {
       this.props.dispatch(push('/dashboard/' + this.props.dashboard.id))
     }.bind(this))
   }
@@ -117,9 +118,9 @@ class Tab extends Component {
 
   refreshTab() {
     console.log(this.props.params.id)
-    io.socket.get('/tab/' + this.props.params.id, function(tab_data) {
+    server(this.props, 'get', '/tab/' + this.props.params.id, {}, function(tab_data) {
       var dashboard_id = tab_data.dashboard.id
-      io.socket.get('/dashboard/' + dashboard_id , function(dash_data) {
+      server(this.props, 'get', '/dashboard/' + dashboard_id, {}, function(dash_data) {
         console.log("pushing to reducer", dash_data, tab_data)
         this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: dash_data})
         this.props.dispatch({type: "RECIEVE_TAB", tab: tab_data})
@@ -129,7 +130,7 @@ class Tab extends Component {
 
   createPanel(data_id){
     var tab_id = this.props.params.id;
-    io.socket.post("/panel", {data: data_id, tab: tab_id, style: {size: "eight"}}, function (res, err) {
+    server(this.props, 'post', "/panel", {data: data_id, tab: tab_id, style: {size: "eight"}}, function (res, err) {
       console.log(res, err)
       this.refreshTab()
     }.bind(this))
@@ -137,14 +138,14 @@ class Tab extends Component {
 
   createTab(data_id){
     var dash_id = this.props.dashboard.id;
-    io.socket.post("/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
-      this.props.dispatch(push("/tab/" + res.id))
+    server(this.props, 'post', "/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
+      this.props.dispatch(push("/tab/" + res.data.id))
     }.bind(this))
   }
 
 
   deletePanel(panel_id) {
-    io.socket.delete("/panel/" + panel_id,function (res) {
+    server(this.props, 'delete', "/panel/" + panel_id, {}, function (res) {
       console.log(res)
       this.refreshTab()
     }.bind(this))
@@ -152,7 +153,7 @@ class Tab extends Component {
 
   updatePanel(panel_id, postable) {
     console.log(postable, panel_id)
-    io.socket.put("/panel/" + panel_id, postable, function (data, err) {
+    server(this.props, 'put', "/panel/" + panel_id, postable, function (data, err) {
       console.log(data, err)
       this.refreshTab()
     }.bind(this))
@@ -161,20 +162,20 @@ class Tab extends Component {
 
   createFilter() {
     var tab_id = this.props.params.id;
-    io.socket.post("/filter", {tab: tab_id, name: '', value:'' }, function (res, err) {
+    server(this.props, 'post', "/filter", {tab: tab_id, name: '', value:'' }, function (res, err) {
       console.log(res, err)
       this.refreshTab()
     }.bind(this))
   }
 
   removeFilter(filter_id) {
-    io.socket.delete("/filter/" + filter_id, function () {
+    server(this.props, 'delete', "/filter/" + filter_id, {}, function () {
       this.refreshTab()
     }.bind(this))
   }
 
   updateFilter(postable, id) {
-    io.socket.put("/filter/" + id, postable, function (data) {
+    server(this.props, 'put', "/filter/" + id, postable, function (data) {
       this.refreshTab()
     }.bind(this))
   }
@@ -260,4 +261,4 @@ class Tab extends Component {
 
 }
 
-export default connect(state => ({ tab: state.tab, datasets: state.datasets, dashboard: state.dashboard, dashboard_settings: state.dashboard_settings }))(DragDropContext(HTML5Backend)(Tab))
+export default connect(state => ({ auth: state.auth, tab: state.tab, datasets: state.datasets, dashboard: state.dashboard, dashboard_settings: state.dashboard_settings }))(DragDropContext(HTML5Backend)(Tab))

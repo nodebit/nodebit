@@ -1,9 +1,9 @@
-require('script!../dependencies/sails.io.js');
-
 import React, {Component, PropTypes} from 'react'
 import {Link} from 'react-router'
 import {push} from 'react-router-redux'
 import {connect} from 'react-redux'
+
+import {server} from '../server'
 
 import DashboardList from '../components/home/DashboardList'
 import DatasetList from '../components/home/DatasetList'
@@ -33,68 +33,66 @@ class Home extends Component {
   }
 
   getDashboards() {
-    io.socket.get("/dashboard", {}, function (dashboardArray) {
+    server(this.props, 'get', '/dashboard', {},  function (dashboardArray) {
       this.props.dispatch({ type: 'RECIEVE_DASHBOARDS', dashboards: dashboardArray })
     }.bind(this))
   }
 
   getDatasets() {
-    io.socket.get("/data", {select: ["url", "name", "id", "updatedAt"]}, function (data) {
+    server(this.props, 'get', "/data", {select: ["url", "name", "id", "updatedAt"]}, function (data) {
       this.props.dispatch({ type: 'RECIEVE_ALL_DATASETS', datasets: data})
     }.bind(this))
   }
   createDataset() {
-    io.socket.post("/data", { type: "DB", chart: { value: [] } }, function (r,p) {
+    server(this.props, 'post', "/data", { type: "DB", chart: { value: [] } }, function (r,p) {
       if (p.statusCode == 201) {
         console.log("should redirect")
-        this.props.dispatch(push("/dataset/" + r.id))
+        this.props.dispatch(push("/dataset/" + r.data.id))
       }
     }.bind(this))
   }
 
   deleteDataset(id) {
-    io.socket.delete('/data', {id: id}, function (){
+    server(this.props, 'delete', '/data', {id: id}, function (){
       console.log("boom!")
       this.getDatasets()
     }.bind(this))
   }
 
   createDashboard() {
-    io.socket.post("/dashboard", { tabs: [] }, function (r,p) {
+    server(this.props, 'post', "/dashboard", { tabs: [] }, function (r,p) {
       if (p.statusCode == 201) {
         console.log("should redirect")
-        this.props.dispatch(push("/dashboard/" + r.id))
+        this.props.dispatch(push("/dashboard/" + r.data.id))
       }
     }.bind(this))
   }
 
   deleteDashboard(e) {
-    console.log(e.target)
-    io.socket.delete('/dashboard', {id: e.target.id}, function (){
+    server(this.props, 'delete', '/dashboard', {id: e.target.id}, function (){
       console.log("boom!")
       this.getDashboards()
     }.bind(this))
   }
 
   getSources() {
-    io.socket.get("/source", {}, function (data) {
+    server(this.props, 'get', "/source", {}, function (data) {
+      console.log("sources", data)
       this.props.dispatch({ type: 'RECIEVE_ALL_SOURCES', sources: data})
     }.bind(this))
   }
 
   createSource() {
-    io.socket.post("/source", {}, function (r,p) {
+    server(this.props, 'post', "/source", {}, function (r,p) {
       if (p.statusCode == 201) {
-        io.socket.get("/source", {}, function (data) {
-          this.props.dispatch({ type: 'RECIEVE_ALL_SOURCES', sources: data})
-          this.props.dispatch(push("/source/" + r.id))
-        }.bind(this))
+        console.log("create response", r)
+        this.props.dispatch(push("/source/" + r.data.id))
       }
     }.bind(this))
   }
 
   deleteSource(id) {
-    io.socket.delete('/source', {id: id}, function (){
+    server(this.props, 'delete', '/source', {id: id}, function (){
       this.getSources()
     }.bind(this))
   }
