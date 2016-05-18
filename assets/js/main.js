@@ -10,6 +10,9 @@ import Dataset from './containers/Dataset'
 import Dashboard from './containers/Dashboard'
 import Source from './containers/Source'
 import Tab from './containers/Tab'
+import Login from './containers/Login'
+
+import {requireAuthentication} from './components/auth'
 
 import app from './reducers'
 
@@ -23,11 +26,12 @@ const history = syncHistoryWithStore(browserHistory, store);
 ReactDOM.render((
   <Provider store={store}>
     <Router history={browserHistory}>
-      <Route path="/" component={Home}/>
-      <Route path="/source/:id" component={Source}/>
-      <Route path="/dataset/:id" component={Dataset}/>
-      <Route path="/dashboard/:id" component={Dashboard}/>
-      <Route path="/tab/:id" component={Tab}/>
+      <Route path="/" component={requireAuthentication(Home)}/>
+      <Route path="/login" component={Login}/>
+      <Route path="/source/:id" component={requireAuthentication(Source)}/>
+      <Route path="/dataset/:id" component={requireAuthentication(Dataset)}/>
+      <Route path="/dashboard/:id" component={requireAuthentication(Dashboard)}/>
+      <Route path="/tab/:id" component={requireAuthentication(Tab)}/>
     </Router>
   </Provider>
 ), document.getElementById('content'))
