@@ -1,11 +1,11 @@
-require('script!../dependencies/sails.io.js');
-
 import React, {Component, PropTypes} from 'react'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
 
 import Postgres from '../components/source/plugins/Postgres'
 import URL from '../components/source/plugins/URL'
+
+import {server} from '../server'
 
 import _ from 'underscore'
 
@@ -28,14 +28,14 @@ class Source extends Component {
   }
 
   getSource() {
-    io.socket.get("/source/" + this.props.params.id, function (data) {
+    server(this.props, 'get', "/source/" + this.props.params.id, {}, function (data) {
       console.log(data)
       this.props.dispatch({type: 'RECIEVE_SOURCE', source: data})
     }.bind(this))
   }
 
   updateSource(postable) {
-    io.socket.put("/source/" + this.props.params.id, postable, function (data) {
+    server(this.props, 'put', "/source/" + this.props.params.id, postable, function (data) {
       this.getSource()
     }.bind(this))
   }
@@ -96,5 +96,5 @@ class Source extends Component {
 }
 
 export default connect(function(state, ownProps) {
-  return { source: state.source }
+  return { source: state.source, auth: state.auth }
 })(Source)

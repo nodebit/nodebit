@@ -159,6 +159,17 @@ function source(state = {}, action) {
   }
 }
 
+function auth(state={isAuthenticated: false, token: null}, action) {
+  switch(action.type) {
+    case 'LOGIN':
+      return {isAuthenticated: true, token: action.token}
+    case 'LOGOUT':
+      return {isAuthenticated: false, token: null}
+    default:
+      return state
+  }
+}
+
 
 const app = combineReducers({
   tab,
@@ -169,6 +180,7 @@ const app = combineReducers({
   dataset,
   sources,
   source,
+  auth,
   routing: routerReducer
 })
 

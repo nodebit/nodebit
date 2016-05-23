@@ -1,11 +1,11 @@
-require('script!../dependencies/sails.io.js');
-
 import React, {Component, PropTypes} from 'react'
 import {Link} from 'react-router'
 import {push} from 'react-router-redux'
 import {connect} from 'react-redux'
 
 import _ from 'underscore'
+
+import {server} from '../server'
 
 import Tab from './Tab'
 
@@ -31,8 +31,8 @@ class Dashboard extends Component {
     if (!_.isEmpty(dashboard)) {
       if (dashboard.tabs.length == 0) {
         var dash_id = this.props.params.id
-        io.socket.post("/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
-          this.props.dispatch(push("/tab/" + res.id))
+        server(this.props, 'post', "/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
+          this.props.dispatch(push("/tab/" + res.data.id))
         }.bind(this))
       } 
     }
@@ -40,7 +40,7 @@ class Dashboard extends Component {
 
   refreshDashboard() {
     this.props.dispatch({type: "AWAITING_DASHBOARD"})
-    io.socket.get('/dashboard/' + this.props.params.id, function(data) {
+    server(this.props, 'get', '/dashboard/' + this.props.params.id, {}, function(data) {
       console.log(data)
       this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: data})
     }.bind(this))
@@ -60,4 +60,4 @@ class Dashboard extends Component {
 }
 
 // so this is bad because now we have a render every time anything in the state changes
-export default connect(state => ({ dashboard: state.dashboard }))(Dashboard)
+export default connect(state => ({ auth: state.auth, dashboard: state.dashboard }))(Dashboard)
