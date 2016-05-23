@@ -4,12 +4,6 @@
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
-var sql = require('seriate')
-var pg = require('pg')
-var named = require('node-postgres-named')
-var request = require('request')
-var Papa = require('papaparse')
-
 module.exports = {
 
   attributes: {
@@ -20,101 +14,46 @@ module.exports = {
     source: {
       model: 'source'
     },
-    withDataAndParams: function(raw_params, callback) {
+    withDataAndParams: function(raw_params, req, callback) {
       var obj = this.toObject();
-      if (obj.type == "DB" && typeof obj.sql !== "undefined") {
-        Source.findOne({id: obj.source}).exec( function (err, source){
-          if (source.type == "sql-server") {
-            const defaults = {
-              "pool": {
-                "max": 10,
-                "min": 4,
-                "idleTimeoutMillis": 30000
-              }
-            }
-            var params = {}
-            if (raw_params) {
-              params = _.object(raw_params.map(function (para) {
-                const type_map = {
-                  'int': sql.INT,
-                  'varchar': sql.VARCHAR
-                }
-                var val = para.value
-                if (para.type == 'int') {
-                  val = parseInt(para.value)
-                }
-                var bulk = {
-                  val: val,
-                  type: type_map[para.type]
-                }
-                return [para.name, bulk]
-              }))
-            }
+      if (typeof obj.source !== "undefined") {
+        Source.findOne({id: obj.source}).exec( function (err, source) {
+          // create a socket to communicate data
+          var room_id = Math.floor((Math.random() * 10000) + 1)
+          req.socket.join(room_id)
 
-            var db_conf = _.extend(defaults, source)
-            db_conf.name = obj.source
-            sql.addConnection(db_conf)
-            sql.getPlainContext(obj.source)
-            .step("getData", {
-                query: obj.sql,
-                params: params
-            })
-            .end(function(sets) {
-                obj.data = sets.getData;
-                callback(obj);
-            })
-            .error(function(err) {
-                console.log(err);
-                obj.errors = [{message: err.message}]
-                callback(obj);
-            })
+          //the is the callback to push data to the client
+          var v = function (obj) {
+            obj.room_id = room_id
+            sails.io.sockets.to(room_id).emit('message', obj)
+          }
+
+          obj.room_id = room_id
+          obj.data = []
+          callback(obj)
+
+          console.log(source.type)
+          if (source.type == "streaming") {
+            StreamService.start(room_id, source, obj, raw_params, v)
           } else if (source.type == "postgres") {
-            var conString = "postgres://" + source.user + ":" + source.password + "@" + source.host + "/" + source.database;
-            var client = new pg.Client(conString)
-            named.patch(client)
-            client.connect()
-
-            var params = {}
-            if (raw_params) {
-              params = _.object(raw_params.map(function (para) {
-                return [para.name, para.value]
-              }))
-            }
-
-            try {
-              client.query(obj.sql, params, function (err, result) {
-                if (err) {
-                  obj.errors = [{ message: err.message }]
-                } else {
-                  obj.data = result.rows
-                }
-                callback(obj)
-              })
-            } catch (e) {
-              obj.errors = [{message: e.message}]
-              callback(obj)
-            }
+            PostgresService.start(room_id, source, obj, raw_params, v)
+          } else if (source.type == "oanda") {
+            OandaService.start(room_id, source, obj, raw_params, v)
           } else if (source.type == "url") {
-            request.get(source.url, function(err, r, body){
-               if (!err && r.statusCode == "200") {
-                 var val = Papa.parse(body, {header: true}).data
-                 obj.data = val
-                 callback(obj)
-               } else {
-                 obj.errors = [{message: err}]
-                 callback(obj)
-               }
-            })
+            URLService.start(room_id, source, obj, raw_params, v)
+          } else if (source.type == "sql-server") {
+            SqlServerService.start(room_id, source, obj, raw_params, v)
+          } else if (source.type == "stock") {
+            StockService.start(room_id, source, obj, raw_params, v)
           }
         })
       } else {
           callback(obj);
       }
-
     },
-    withData: function (callback) {
+    withData: function (req, callback) {
       var obj = this.toObject();
-      this.withDataAndParams(obj.parameters,callback)
+      this.withDataAndParams(obj.parameters, req, callback)
     }
   }, afterDestroy: function(destroyedRecords, cb) {
     Panel.destroy({ data: _.pluck(destroyedRecords, 'id') }).exec(cb)

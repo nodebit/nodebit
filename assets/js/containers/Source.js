@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import Postgres from '../components/source/plugins/Postgres'
 import URL from '../components/source/plugins/URL'
+import Stock from '../components/source/plugins/Stock'
 
 import {server} from '../server'
 
@@ -59,6 +60,9 @@ class Source extends Component {
                   <option value="sql-server">SQL Server</option>
                   <option value="postgres">PostgreSQL</option>
                   <option value="url">URL</option>
+                  <option value="oanda">Oanda</option>
+                  <option value="streaming">Streaming</option>
+                  <option value="stock">Stock</option>
                 </select>
                 <input type="submit" className="ui button"/>
               </form>
@@ -72,6 +76,12 @@ class Source extends Component {
           block = (<Postgres source={source} updateSource={this.updateSource}/>)
         } else if (source.type == "url") {
           block = (<URL source={source} updateSource={this.updateSource}/>)
+        } else if (source.type == "oanda") {
+          block = (<URL source={source} updateSource={this.updateSource}/>)
+        } else if (source.type == "streaming") {
+          block = (<URL source={source} updateSource={this.updateSource}/>)
+        } else if (source.type == "stock") {
+          block = (<Stock source={source} updateSource={this.updateSource}/>)
         }
       }
     } else {
