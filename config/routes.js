@@ -43,6 +43,7 @@ module.exports.routes = {
   ***************************************************************************/
   'get /data/:id': 'DataController.findRecord',
   'put /data/:id/sql': 'DataController.updateSql',
+  'get /data/:id/stop': 'DataController.stop',
   'post /data/:id/parameters': 'DataController.createParameter',
   'get /tab/:id': 'TabController.findRecord',
   'get /dashboard/:id': 'DashboardController.findRecord'

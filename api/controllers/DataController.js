@@ -1,7 +1,4 @@
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
-var Papa = require("papaparse");
-var request = require('request');
-var sql = require('seriate')
 
 /**
  * DataController
@@ -73,8 +70,9 @@ module.exports = {
   findRecord: function(req, res) {
 		// set a default connection pool
 
+  	console.log(req.socket.id)
     Data.findOne({id: req.param('id')}).exec(function found(err, record) {
-			record.withData(function (complete) {
+			record.withData(req, function (complete) {
 				res.ok(complete);
 			});
     });
@@ -84,7 +82,7 @@ module.exports = {
 			Data.update({id: req.params.id}, {sql: req.body.sql }).exec(function created(err, updated) {
 				console.log("sql updated");
 				Data.findOne({id: updated[0].id}).exec(function found(err, record) {
-					record.withData(function (complete) {
+					record.withData(req, function (complete) {
 						res.ok(complete);
 					});
 				});
@@ -102,45 +100,11 @@ module.exports = {
 		   dataset.save(function (err, dataset) { res.ok({}) })
 		 })
 	},
-	create: function (req, res) {
-		var Model = actionUtil.parseModel(req);
-
-		// Create data object (monolithic combination of all parameters)
-		// Omit the blacklisted params (like JSONP callback param, etc.)
-		var params = actionUtil.parseValues(req);
-
-		// Create new instance of model using data from params
-		Data.create(params).exec(function created (err, newInstance) {
-
-			// Differentiate between waterline-originated validation errors
-			// and serious underlying issues. Respond with badRequest if a
-			// validation error is encountered, w/ validation info.
-			if (err) return res.negotiate(err);
-			// Gather the data
-      console.log(params)
-			if (params.type == "URL") {
-	      if (params.url != null) {
-	        request.get(params.url, function(err, r, body){
-	          if (!err && r.statusCode == "200") {
-	            var val = Papa.parse(body, {header: true}).data;
-	            Data.update({id: newInstance.id}, {data: val}).exec(function created(err, updated) {
-	              console.log("data pulled")
-	              res.created(newInstance);
-	            });
-	          } else {
-	            Data.destroy({id: newInstance.id}).exec( function() {
-	              console.log("data pull failed")
-	              console.log(err);
-	              res.badRequest();
-	            });
-	          }
-	        });
-	      } else {
-		      res.badRequest();
-	      }
-			} else {
-				res.created(newInstance);
-			}
-		});
-	}
+  stop: function (req, res) {
+    console.log("STOP")
+    var room_id = req.params.id
+    sails.sockets.leave(req, room_id)
+    StreamService.stop(room_id)
+    res.json({message: 'done' })
+  }
 };

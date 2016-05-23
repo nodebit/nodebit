@@ -23,7 +23,7 @@ class Dashboard extends Component {
 
   componentWillUnmount() {
     console.log("blow up dashboard object")
-    this.props.dispatch({type: "UNMOUNT_DASHBOARD"})
+    // don't perform any action the dashboard has tabs
   }
 
   componentDidUpdate(){
@@ -34,10 +34,7 @@ class Dashboard extends Component {
         io.socket.post("/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
           this.props.dispatch(push("/tab/" + res.id))
         }.bind(this))
-      } else {
-        var tab_id = dashboard.tabs[0].id
-        this.props.dispatch(push("/tab/" + tab_id))
-      }
+      } 
     }
   }
 
@@ -50,11 +47,14 @@ class Dashboard extends Component {
   }
 
   render() {
+    const {dashboard} = this.props
+    var tab = null;
+    if (typeof dashboard.tabs !== "undefined") {
+      tab = (<Link to={`/tab/${dashboard.tabs[0].id}`}>{dashboard.tabs[0].name}</Link>)
+    }
     return (
-        <div className="ui active dimmer">
-          <div className="ui loader"></div>
-        </div>
-      )
+      tab 
+    )
   }
 
 }

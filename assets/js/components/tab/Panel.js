@@ -138,20 +138,37 @@ class Panel extends Component {
       </div>
     )
     var output;
-    if (dataset.output == "chart")  {
-      output =  (
-        <Chart
-          data={dataset.data}
-          chart={dataset.chart}
-          id={id}
-        />
-      )
-    } else if (dataset.output == "statistic") {
+    if (dataset.data.length > 0) {
+      if (dataset.output == "chart")  {
+        output =  (
+          <Chart
+            data={dataset.data}
+            chart={dataset.chart}
+            id={id}
+          />
+        )
+      } else if (dataset.output == "statistic") {
+        output = (
+          <Statistic
+            data={dataset.data}
+            statistic={dataset.statistic}
+          />
+        )
+      }
+    } else if (typeof dataset.errors !== "undefined" && dataset.errors.length > 0) {
       output = (
-        <Statistic
-          data={dataset.data}
-          statistic={dataset.statistic}
-        />
+        <div className="ui negative message">
+          <div className="header">
+            Data Error
+          </div>
+          <p>{dataset.errors[0].message}</p>
+        </div>
+      )
+    } else {
+      output = (
+        <div className="ui active inverted dimmer">
+          <div className="ui loader"></div>
+        </div>
       )
     }
 
@@ -163,7 +180,9 @@ class Panel extends Component {
               <h4>{dataset.name}</h4>
             </div>
             { options }
-            { output }
+            <div className="content">
+              { output }
+            </div>
           </div>
         </div>
       </div>
