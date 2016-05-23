@@ -30,11 +30,11 @@ module.exports = {
     }
 
     var db_conf = _.extend(defaults, source)
-    db_conf.name = obj.source
+    db_conf.name = source.id
     sql.addConnection(db_conf)
-    sql.getPlainContext(obj.source)
+    sql.getPlainContext(source.id)
     .step("getData", {
-        query: obj.sql,
+        query: dataset.sql,
         params: params
     })
     .end(function(sets) {

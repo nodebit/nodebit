@@ -24,11 +24,9 @@ class Tab extends Component {
     this.togglePreview = this.togglePreview.bind(this)
     this.toggleFilters = this.toggleFilters.bind(this)
 
-    this.switchTab = this.switchTab.bind(this)
     this.refreshTab = this.refreshTab.bind(this)
 
     this.createTab = this.createTab.bind(this)
-    this.updateTab = this.updateTab.bind(this)
     this.updateName = this.updateName.bind(this)
     this.deleteTab = this.deleteTab.bind(this)
 
@@ -44,13 +42,10 @@ class Tab extends Component {
   }
 
   componentDidMount() {
-    console.log("first load")
     this.refreshTab()
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("trying to decide if we reload")
-    console.log(nextProps, this.props)
     if (!_.isEmpty(nextProps.tab) && !_.isEmpty(nextProps.dashboard) )
       return true
     else
@@ -58,10 +53,7 @@ class Tab extends Component {
   }
 
   componentDidUpdate() {
-    console.log("about to render with an optional server reload")
-    console.log(this.props)
     if (this.props.params.id !== this.props.tab.id) {
-      console.log("performing the optional server reload")
       this.props.dispatch({type: "AWAITING_TAB"})
       this.refreshTab()
     } else {
@@ -74,12 +66,14 @@ class Tab extends Component {
     this.props.dispatch({type: "UNMOUNT_TAB"})
     this.stopStreams()
   }
-  
+
   stopStreams() {
     if (!_.isEmpty(this.props.tab)) {
       this.props.tab.panels.forEach(function (panel) {
-        io.socket.get("/data/" + panel.dataset.room_id + "/stop")
-      }.bind(this)) 
+        server(this.props, 'get', "/data/" + panel.dataset.room_id + "/stop", {}, function () {
+
+        })
+      }.bind(this))
     }
   }
 
@@ -129,13 +123,13 @@ class Tab extends Component {
   createTab(data_id){
     var dash_id = this.props.dashboard.id;
     server(this.props, 'post', "/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
-        server(this.props, 'get', "dashboard/" + dash_id, function (dashboard) {
-             this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: dashboard})
-             this.props.dispatch(push("/tab/" + res.data.id))        
-        }.bind(this))
+      server(this.props, 'get', "/dashboard/" + dash_id, {}, function (dashboard) {
+        console.log(dashboard)
+        this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: dashboard})
+        this.props.dispatch(push("/tab/" + res.data.id))
+      }.bind(this))
     }.bind(this))
   }
-
 
   deletePanel(panel_id) {
     server(this.props, 'delete', "/panel/" + panel_id, {}, function (res) {

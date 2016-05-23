@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import Postgres from '../components/source/plugins/Postgres'
 import URL from '../components/source/plugins/URL'
+import Stock from '../components/source/plugins/Stock'
 
 import {server} from '../server'
 
@@ -80,7 +81,7 @@ class Source extends Component {
         } else if (source.type == "streaming") {
           block = (<URL source={source} updateSource={this.updateSource}/>)
         } else if (source.type == "stock") {
-          block = (<URL source={source} updateSource={this.updateSource}/>)
+          block = (<Stock source={source} updateSource={this.updateSource}/>)
         }
       }
     } else {

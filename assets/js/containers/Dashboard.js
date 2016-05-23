@@ -34,7 +34,7 @@ class Dashboard extends Component {
         server(this.props, 'post', "/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
           this.props.dispatch(push("/tab/" + res.data.id))
         }.bind(this))
-      } 
+      }
     }
   }
 
@@ -49,11 +49,11 @@ class Dashboard extends Component {
   render() {
     const {dashboard} = this.props
     var tab = null;
-    if (typeof dashboard.tabs !== "undefined") {
+    if (typeof dashboard.tabs !== "undefined" && dashboard.tabs.length > 0) {
       tab = (<Link to={`/tab/${dashboard.tabs[0].id}`}>{dashboard.tabs[0].name}</Link>)
     }
     return (
-      tab 
+      tab
     )
   }
 

@@ -28,9 +28,9 @@ class Dataset extends Component {
   }
 
   componentWillUnmount() {
-    console.log("shutting down");
-    io.socket.get("/data/" + this.props.dataset.room_id + "/stop")
-    this.props.dispatch({type: "UNMOUNT_DATASET"})
+    server(this.props, 'get', "/data/" + this.props.dataset.room_id + "/stop", {}, function () {
+      this.props.dispatch({type: "UNMOUNT_DATASET"})
+    }.bind(this))
   }
 
   refreshDataset() {

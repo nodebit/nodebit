@@ -18,31 +18,34 @@ module.exports = {
       var obj = this.toObject();
       if (typeof obj.source !== "undefined") {
         Source.findOne({id: obj.source}).exec( function (err, source) {
-          
-          // create a socket to communicate date
+          // create a socket to communicate data
           var room_id = Math.floor((Math.random() * 10000) + 1)
           req.socket.join(room_id)
+
+          //the is the callback to push data to the client
           var v = function (obj) {
             obj.room_id = room_id
             sails.io.sockets.to(room_id).emit('message', obj)
           }
+
+          obj.room_id = room_id
+          obj.data = []
+          callback(obj)
+
           console.log(source.type)
           if (source.type == "streaming") {
             StreamService.start(room_id, source, obj, raw_params, v)
           } else if (source.type == "postgres") {
             PostgresService.start(room_id, source, obj, raw_params, v)
           } else if (source.type == "oanda") {
-            OandaService.start(room_id, source, obj, raw_params, v) 
+            OandaService.start(room_id, source, obj, raw_params, v)
           } else if (source.type == "url") {
             URLService.start(room_id, source, obj, raw_params, v)
           } else if (source.type == "sql-server") {
-            SqlService.start(room_id, source, obj, raw_params, v)
+            SqlServerService.start(room_id, source, obj, raw_params, v)
           } else if (source.type == "stock") {
-            StockService.start(room_id, source, obj, raw_params, v) 
+            StockService.start(room_id, source, obj, raw_params, v)
           }
-          obj.room_id = room_id
-          obj.data = []
-          callback(obj)
         })
       } else {
           callback(obj);
