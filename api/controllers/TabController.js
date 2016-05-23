@@ -28,7 +28,7 @@ module.exports = {
               }
             })
           }
-          data.withDataAndParams(params, function(gotData) {
+          data.withDataAndParams(params, req, function(gotData) {
             panel.dataset = gotData
             callback(null, panel)
           })
