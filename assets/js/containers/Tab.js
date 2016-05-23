@@ -24,11 +24,9 @@ class Tab extends Component {
     this.togglePreview = this.togglePreview.bind(this)
     this.toggleFilters = this.toggleFilters.bind(this)
 
-    this.switchTab = this.switchTab.bind(this)
     this.refreshTab = this.refreshTab.bind(this)
 
     this.createTab = this.createTab.bind(this)
-    this.updateTab = this.updateTab.bind(this)
     this.updateName = this.updateName.bind(this)
     this.deleteTab = this.deleteTab.bind(this)
 
@@ -44,13 +42,10 @@ class Tab extends Component {
   }
 
   componentDidMount() {
-    console.log("first load")
     this.refreshTab()
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("trying to decide if we reload")
-    console.log(nextProps, this.props)
     if (!_.isEmpty(nextProps.tab) && !_.isEmpty(nextProps.dashboard) )
       return true
     else
@@ -58,12 +53,8 @@ class Tab extends Component {
   }
 
   componentDidUpdate() {
-    console.log("about to render with an optional server reload")
-    console.log(this.props)
     if (this.props.params.id !== this.props.tab.id) {
-      console.log("performing the optional server reload")
       this.props.dispatch({type: "AWAITING_TAB"})
-      this.props.dispatch({type: "AWAITING_DASHBOARD"})
       this.refreshTab()
     } else {
       // jump straight to the render no further data need be loaded
@@ -73,6 +64,17 @@ class Tab extends Component {
   componentWillUnmount() {
     console.log("shutting down")
     this.props.dispatch({type: "UNMOUNT_TAB"})
+    this.stopStreams()
+  }
+
+  stopStreams() {
+    if (!_.isEmpty(this.props.tab)) {
+      this.props.tab.panels.forEach(function (panel) {
+        server(this.props, 'get', "/data/" + panel.dataset.room_id + "/stop", {}, function () {
+
+        })
+      }.bind(this))
+    }
   }
 
   togglePreview() {
@@ -91,20 +93,6 @@ class Tab extends Component {
       this.props.dispatch({type: "OPEN_FILTERS"})
   }
 
-  updateTab(postable, full_reset=false) {
-    server(this.props, 'put', "/tab/" + this.props.params.id, postable, function (data) {
-      if (full_reset)
-        this.refreshTab()
-      else
-        this.props.dispatch({type: "RECIEVE_UPDATE_TAB", tab: data})
-    }.bind(this))
-  }
-
-  switchTab(tab_id) {
-    console.log("what a pleasant day for a switchTab")
-    this.props.dispatch(push("/tab/" + tab_id))
-  }
-
   deleteTab() {
     console.log("giving it a whirl on the deleting")
     server(this.props, 'delete', "/tab/" + this.props.params.id, {}, function () {
@@ -118,13 +106,9 @@ class Tab extends Component {
 
   refreshTab() {
     console.log(this.props.params.id)
+    this.stopStreams()
     server(this.props, 'get', '/tab/' + this.props.params.id, {}, function(tab_data) {
-      var dashboard_id = tab_data.dashboard.id
-      server(this.props, 'get', '/dashboard/' + dashboard_id, {}, function(dash_data) {
-        console.log("pushing to reducer", dash_data, tab_data)
-        this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: dash_data})
         this.props.dispatch({type: "RECIEVE_TAB", tab: tab_data})
-      }.bind(this))
     }.bind(this))
   }
 
@@ -139,10 +123,13 @@ class Tab extends Component {
   createTab(data_id){
     var dash_id = this.props.dashboard.id;
     server(this.props, 'post', "/tab", {dashboard: dash_id, name: 'New Tab', filters: [], panels:[]}, function (res) {
-      this.props.dispatch(push("/tab/" + res.data.id))
+      server(this.props, 'get', "/dashboard/" + dash_id, {}, function (dashboard) {
+        console.log(dashboard)
+        this.props.dispatch({type: "RECIEVE_DASHBOARD", dashboard: dashboard})
+        this.props.dispatch(push("/tab/" + res.data.id))
+      }.bind(this))
     }.bind(this))
   }
-
 
   deletePanel(panel_id) {
     server(this.props, 'delete', "/panel/" + panel_id, {}, function (res) {
@@ -231,7 +218,6 @@ class Tab extends Component {
             dashboard={dashboard}
             tab={tab}
             createTab={this.createTab}
-            switchTab={this.switchTab}
             togglePreview={this.togglePreview}
             dashboard_settings={dashboard_settings}
           />

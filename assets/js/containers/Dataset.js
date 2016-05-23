@@ -28,8 +28,9 @@ class Dataset extends Component {
   }
 
   componentWillUnmount() {
-    console.log("shutting down");
-    this.props.dispatch({type: "UNMOUNT_DATASET"})
+    server(this.props, 'get', "/data/" + this.props.dataset.room_id + "/stop", {}, function () {
+      this.props.dispatch({type: "UNMOUNT_DATASET"})
+    }.bind(this))
   }
 
   refreshDataset() {
@@ -97,7 +98,7 @@ class Dataset extends Component {
         )
       }
       var error;
-      if (dataset.errors) {
+      if (typeof dataset.errors !== "undefined" && dataset.errors.length > 0) {
         error = (
           <div className="row">
             <div className="column sixteen wide">

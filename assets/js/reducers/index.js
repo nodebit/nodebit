@@ -3,6 +3,53 @@ import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 
 function tab(state = {}, action) {
   switch(action.type) {
+    case 'REPLACE_TAB_DATASET_DATA':
+      if (typeof state.panels !== "undefined") {
+        state.panels.forEach(function (panel) {
+          if (panel.dataset.room_id == action.room_id) {
+            panel.dataset.errors = []
+            panel.dataset = Object.assign({}, panel.dataset, {data:action.data})
+          } 
+        })
+        
+        var new_panels = state.panels.slice(0)
+        return Object.assign({},state, {panels: new_panels})
+      } else {
+        console.log("PUSHING DATA INTO UNSET PANEL")
+        return state
+      }
+    case 'STREAM_TAB_DATASET_DATA':
+      if (typeof state.panels !== "undefined") {
+        state.panels.forEach(function (panel) {
+          if (panel.dataset.room_id == action.room_id) {
+            if (typeof state.buffer === "undefined")
+              state.buffer = 5
+              
+            panel.dataset.errors = []
+            panel.dataset.data.unshift(action.data)
+            panel.dataset.data = panel.dataset.data.slice(0, state.buffer)
+          } 
+        })
+        var new_panels = state.panels.slice(0)
+        return Object.assign({},state, {panels: new_panels})
+      } else {
+        console.log("PUSHING DATA INTO UNSET PANEL")
+        return state
+      }
+    case 'ERROR_TAB_DATASET_DATA':
+      if (typeof state.panels !== "undefined") {
+        state.panels.forEach(function (panel) {
+          if (panel.dataset.room_id == action.room_id) {
+            panel.dataset = Object.assign({}, panel.dataset, {errors:[action.data], data: []})
+          } 
+        })
+        
+        var new_panels = state.panels.slice(0)
+        return Object.assign({},state, {panels: new_panels})
+      } else {
+        console.log("PUSHING DATA INTO UNSET PANEL")
+        return state
+      }
     case 'RECIEVE_TAB':
       return action.tab
     case 'AWAITING_TAB':
@@ -72,6 +119,16 @@ function dataset(state = {}, action) {
       return action.dataset
     case 'AWAITING_DATASET':
       return {}
+    case 'REPLACE_DATASET_DATA':
+      return Object.assign({}, state, {data: action.data, errors: []})
+    case 'STREAM_DATASET_DATA':
+      state.data.unshift(action.data)
+      if (typeof state.buffer === "undefined")
+        state.buffer = 5
+      var newData = state.data.slice(0,state.buffer)
+      return Object.assign({}, state, {data: newData, errors: []})
+    case 'ERROR_DATASET_DATA':
+      return Object.assign({}, state, {errors: action.data })
     case 'RECIEVE_UPDATE_DATASET':
       return Object.assign({}, state, action.dataset)
     case 'UPDATE_DATASET_TYPE':

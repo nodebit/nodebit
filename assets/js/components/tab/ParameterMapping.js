@@ -11,7 +11,6 @@ export default class ParameterMapping extends Component {
   render() {
     const {filters, dataset, filter_parameters, updateParameterFilter} = this.props
     var avaliable_params
-    console.log(filters, "filters")
     if (dataset.parameters) {
       avaliable_params = dataset.parameters.map(function(param) {
         var setFilter
