@@ -49,27 +49,27 @@ export default class ChartControls extends Component {
 
   render() {
     console.log(this.props)
-    const {chart, data} = this.props
+    const {controls, data} = this.props
     var yCheck = []
     var gCheck;
     var xCheck;
     var chartType = "";
 
     // Values is an array where each element represents and XY data group
-    if (chart.value.length > 0) {
-      yCheck = chart.value.map(function (e) {return e.yattr});
+    if (controls.value.length > 0) {
+      yCheck = controls.value.map(function (e) {return e.yattr});
 
       // We have a top level chart variable that indicates grouping
-      gCheck = chart.group
+      gCheck = controls.group
 
       // For now we are holding that the first data group contains the X Axis
       // and the chart type for the entire plot
-      xCheck = chart.value[0].xattr;
+      xCheck = controls.value[0].xattr;
       // If we have more than one trace then we need to see what we grouped by
-      chartType = chart.value[0].type;
+      chartType = controls.value[0].type;
 
       // Chart type is line if scatter plot and the mode isn't requested as markers
-      if (chartType == "scatter" && chart.value[0].mode != "markers")
+      if (chartType == "scatter" && controls.value[0].mode != "markers")
         chartType = "line"
     }
 
