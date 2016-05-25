@@ -1,12 +1,12 @@
 
 import React, {Component, PropTypes} from 'react'
 
-import DatasetStatistic from '../charts/Stat.js'
+import Display from './Display.js'
 
-export default class DatasetChart extends Component {
+export default class Controls extends Component {
 
   constructor(props) {
-    super(props) 
+    super(props)
 
     this.updateStatistic = this.updateStatistic.bind(this)
   }
@@ -19,22 +19,22 @@ export default class DatasetChart extends Component {
   }
 
   render() {
-    const {statistic, data, refreshDataset, updateDataset} = this.props
+    const {controls, data, refreshDataset, updateDataset} = this.props
     const values = Object.keys(data[0]).map( (e)=>(
-      <option value={e}>{e}</option>      
+      <option value={e}>{e}</option>
     ))
     return (
       <div className="">
         <div className="">
           <label>Label</label>
-          <input type="text" defaultValue={statistic.label} ref="labeler" onChange={this.updateStatistic}/>
+          <input type="text" defaultValue={controls.label} ref="labeler" onChange={this.updateStatistic}/>
           <label>Value</label>
-          <select defaultValue={statistic.value} ref="value" onChange={this.updateStatistic}>
+          <select defaultValue={controls.value} ref="value" onChange={this.updateStatistic}>
             {values}
           </select>
         </div>
-        <DatasetStatistic
-          statistic={statistic}
+        <Display
+          controls={controls}
           data={data}
         />
       </div>

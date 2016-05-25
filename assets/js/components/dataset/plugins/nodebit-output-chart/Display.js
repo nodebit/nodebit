@@ -1,4 +1,4 @@
-require('script!../../dependencies/plotly-latest.min.js');
+require('script!../../../../dependencies/plotly-latest.min.js');
 
 import React, {Component, PropTypes} from 'react'
 
@@ -7,13 +7,13 @@ import _ from 'underscore'
 export default class Chart extends Component {
 
   componentDidUpdate() {
-    const {chart, data, id} = this.props
-    this.buildChart(chart, data, id)
+    const {controls, data, id} = this.props
+    this.buildChart(controls, data, id)
   }
 
   componentDidMount() {
-    const {chart, data, id} = this.props
-    this.buildChart(chart, data, id)
+    const {controls, data, id} = this.props
+    this.buildChart(controls, data, id)
   }
 
   buildChart(chart, data, id) {
@@ -54,7 +54,7 @@ export default class Chart extends Component {
   }
 
   render() {
-    const {chart, id} = this.props
+    const {controls, id} = this.props
     const plotId = "plot-" + id
     return (
       <div>
