@@ -14,6 +14,7 @@ import DatasetPicker from '../components/tab/DatasetPicker'
 import SingleValueForm from '../components/common/Form'
 import TabNavigation from '../components/tab/TabNavigation'
 import Filters from '../components/tab/Filters'
+import Panel from '../components/tab/Panel'
 
 class Tab extends Component {
 
@@ -184,7 +185,17 @@ class Tab extends Component {
       const remaining_sets = datasets.filter((e) => used.indexOf(e.id) == -1 )
       var display_panels = panels.map(function (e) {
         return (
-          <div></div>
+          <Panel
+            id={e.id}
+            key={e.id}
+            style={e.style}
+            dataset={e.dataset}
+            filters={filters}
+            filter_parameters={e.filter_parameters}
+            dashboard_settings={dashboard_settings}
+            updatePanel={this.updatePanel}
+            deletePanel={this.deletePanel}
+          />
         )
       }.bind(this))
       var editable;

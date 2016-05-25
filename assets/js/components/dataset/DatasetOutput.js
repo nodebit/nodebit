@@ -1,22 +1,9 @@
 import React, {Component, PropTypes} from 'react'
 
-/*
-function requireAll(requireContext) {
-  return requireContext.keys().map(requireContext);
-}
-// requires and returns all modules that match
-
-console.log(req)
-var modules = requireAll(req);
-console.log(modules)
-// is an array containing all the matching modules
-*/
-//var req = require.context("../plugins", true, /^\.\/.*\.js$/)
+//dynamically load the avaliable plugins
 var req = require.context("./plugins", true)
-console.log(req.keys())
 
 export default class DatasetOutput extends Component {
-
 
   constructor(props) {
     super(props)
@@ -26,16 +13,13 @@ export default class DatasetOutput extends Component {
     files.forEach(function (file) {
       if (file.indexOf("/Controls.js") !== -1) {
         var componentId = req.resolve(file)
-        console.log(file)
         var component = __webpack_require__(componentId)
-        console.log(component)
         var matches = file.match(/nodebit-output-([^\/\\]+)\/Controls.js$/)
         var componentType = matches[1]
         this.components[componentType] = component
       }
     }.bind(this))
 
-    console.log(this.components)
     this.updateOutput = this.updateOutput.bind(this)
   }
 

@@ -3,11 +3,11 @@ import {DragSource} from 'react-dnd'
 
 import ParameterMapping from './ParameterMapping'
 
-import Chart from '../charts/Chart'
-import Statistic from '../charts/Stat'
-
 import $ from 'jquery'
 import _ from 'underscore'
+
+//dynamically load the avaliable plugins
+var req = require.context("../dataset/plugins", true)
 
 const panelSource = {
   beginDrag(props) {
@@ -33,6 +33,19 @@ class Panel extends Component {
 
   constructor(props) {
     super(props)
+    this.components = {}
+
+
+    var files = req.keys()
+    files.forEach(function (file) {
+      if (file.indexOf("/Display.js") !== -1) {
+        var componentId = req.resolve(file)
+        var component = __webpack_require__(componentId)
+        var matches = file.match(/nodebit-output-([^\/\\]+)\/Display.js$/)
+        var componentType = matches[1]
+        this.components[componentType] = component
+      }
+    }.bind(this))
 
     this.updateSize = this.updateSize.bind(this)
     this.updateParameterFilter = this.updateParameterFilter.bind(this)
@@ -118,7 +131,7 @@ class Panel extends Component {
           </div>
         )
     }
-    
+
     var parameter_mapping;
     if (!dashboard_settings.preview) {
       parameter_mapping = (
@@ -139,22 +152,21 @@ class Panel extends Component {
     )
     var output;
     if (dataset.data.length > 0) {
-      if (dataset.output == "chart")  {
-        output =  (
-          <Chart
-            data={dataset.data}
-            chart={dataset.chart}
-            id={id}
-          />
-        )
-      } else if (dataset.output == "statistic") {
-        output = (
-          <Statistic
-            data={dataset.data}
-            statistic={dataset.statistic}
-          />
-        )
-      }
+      var output;
+      Object.keys(this.components).forEach(function (key) {
+        // add selected panel
+        var Control = this.components[key].default
+        if (dataset.output == key) {
+          output = (
+            <Control
+              controls={dataset[key]}
+              data={dataset.data}
+              id={id}
+            />
+          )
+        }
+      }.bind(this))
+
     } else if (typeof dataset.errors !== "undefined" && dataset.errors.length > 0) {
       output = (
         <div className="ui negative message">
