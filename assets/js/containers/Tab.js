@@ -101,7 +101,11 @@ class Tab extends Component {
   }
 
   updateName(name) {
-    this.updateTab({name: name}, true)
+    server(this.props, 'put', '/tab/' + this.props.params.id, {name:name}, function () {
+      server(this.props, 'get', '/dashboard/' + this.props.dashboard.id, {}, function (dashboard) {
+        this.props.dispatch({type: 'RECIEVE_DASHBOARD', dashboard: dashboard})
+      }.bind(this))
+    }.bind(this))
   }
 
   refreshTab() {
