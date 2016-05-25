@@ -6,6 +6,8 @@ NodeJS based framework for pulling, transforming and displaying data.
 
 ### Sources:
 - Postgres 
+- SQL Server
+- CSV URL
 
 ### Source Transformations:
 - SQL
@@ -14,7 +16,7 @@ NodeJS based framework for pulling, transforming and displaying data.
 - None
 
 ### Outputs:
-- Plotly JS
+- Plotly JS(Bar, Line, Scatter, Histogram)
 - Statistic (label + value)
 
 ## Setup
@@ -31,3 +33,6 @@ NodeJS based framework for pulling, transforming and displaying data.
 
 ### Start the Server
 `npm start`
+
+### Create an authenticated user
+`curl localhost:1337/users curl -H "Content-Type: application/json" -X POST -d '{"email":"email@email.com", "password": "password"}' http://localhost:1337/auth/signup`
