@@ -9,12 +9,12 @@ import {push} from 'react-router-redux'
 import _ from 'underscore'
 import {server} from '../server'
 
-import Panel from '../components/tab/Panel'
 import Trash from '../components/tab/Trash'
 import DatasetPicker from '../components/tab/DatasetPicker'
 import SingleValueForm from '../components/common/Form'
 import TabNavigation from '../components/tab/TabNavigation'
 import Filters from '../components/tab/Filters'
+import Panel from '../components/tab/Panel'
 
 class Tab extends Component {
 

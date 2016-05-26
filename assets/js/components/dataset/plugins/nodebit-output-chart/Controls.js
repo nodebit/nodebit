@@ -1,12 +1,12 @@
 import React, {Component, PropTypes} from 'react'
 
-import ChartControls from '../charts/ChartControls'
-import Chart from '../charts/Chart'
+import ChartControls from './components/ChartControls'
+import Display from './Display'
 
 export default class DatasetChart extends Component {
 
   render() {
-    const {chart, data, refreshDataset, updateDataset} = this.props
+    const {controls, data, refreshDataset, updateDataset} = this.props
     var block;
     var block2;
     block = (
@@ -14,14 +14,17 @@ export default class DatasetChart extends Component {
         <ChartControls
           refreshDataset={refreshDataset}
           updateDataset={updateDataset}
-          chart={chart}
+          controls={controls}
           data={data}
         />
       </div>
     )
     block2 = (
       <div className="column thirteen wide">
-        <Chart chart={chart} data={data}/>
+        <Display
+          controls={controls}
+          data={data}
+        />
       </div>
     )
     return (
@@ -31,7 +34,4 @@ export default class DatasetChart extends Component {
       </div>
     )
   }
-}
-
-DatasetChart.propTypes = {
 }
