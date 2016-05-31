@@ -67,10 +67,10 @@ module.exports = {
 			var d = __dirname.replace("controllers","services")
 			fs.readdir(d, function (err, files) {
 				var files = files.filter(function (file) {
-					return file.indexOf("Lifecycle")	!== -1
+					return file.indexOf("LifecycleService.js")	!== -1
 				}).map(function (file) {
-					var pluginName = file.replace(".js", "")	
-				  return  {id: 'plugin/' + pluginName, name: 'pluginName'}
+					var pluginName = file.replace("LifecycleService.js", "")	
+				  return  {id: 'plugin/' + pluginName.toLowerCase(), name: pluginName, lifecycle: true}
 				})
 				var allRecords = matchingRecords.concat(files)
 				res.ok(allRecords);

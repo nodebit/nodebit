@@ -6,7 +6,8 @@ module.exports = {
       async.map(record.panels, function(panel, callback) {
         if (panel.data.indexOf("plugin") !== -1) {
         
-          var pluginType = panel.data.replace("plugin/","TreeLifecycleService")
+          var pluginType = panel.data.replace("plugin/","")
+          var pluginLocation = pluginType.charAt(0).toUpperCase() + pluginType.slice(1) + "LifecycleService"
           var room_id = Math.floor((Math.random() * 10000) + 1)
           req.socket.join(room_id)
 
@@ -19,12 +20,13 @@ module.exports = {
           var obj = {}
           obj.room_id = room_id
           obj.data = []
-          obj.output = "tree"
+          obj.output = pluginType
+          obj.name = pluginType
           panel.dataset = obj
           callback(null, panel)
 
           setTimeout (function () {
-            eval("TreeLifecycleService.start(room_id, {}, obj, [], v)")
+            eval(pluginLocation + ".start(room_id, {}, obj, [], v)")
           }, 2000)
                     
         } else {
