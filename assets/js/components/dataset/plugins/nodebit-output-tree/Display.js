@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 
-export default class Stat extends Component {
+export default class Display extends Component {
 
   render() {
     const {controls, data} = this.props
-    var stat_value = data[0][controls.value]
-    var rows = data.map(function(row){
-      return (<div>{row}</div>)
+    var rows = data.map(function(row) {
+      console.log("this row", row)
+      return (<div>{row.header}</div>)
     })
     return (
       <div className="ui">
