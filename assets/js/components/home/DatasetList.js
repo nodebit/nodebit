@@ -18,17 +18,29 @@ export default class DatasetList extends Component {
   render() {
     const {datasets, createDataset} = this.props
     const items = datasets.map(function(e, i) {
-      return (
-        <div className="card" key={e.id}>
-          <div className="ui content segments">
-            <div className="header">{e.name}</div>
-            <div className="meta">{moment(e.updatedAt).fromNow()} |  <a onClick={this.deleteDataset} id={e.id}>Delete</a></div>
-            <div className="description">
+      if (typeof e.lifecycle == "undefined") {
+        return (
+          <div className="card" key={e.id}>
+            <div className="ui content segments">
+              <div className="header">{e.name}</div>
+              <div className="meta">{moment(e.updatedAt).fromNow()} |  <a onClick={this.deleteDataset} id={e.id}>Delete</a></div>
+              <div className="description">
+              </div>
+            </div>
+            <Link to={`/dataset/${e.id}`} id={e.id} className="ui button primary attached bottom">View Dataset</Link>
+          </div>
+        )
+      } else {
+        return (
+          <div className="card" key={e.id}>
+            <div className="ui content segments">
+              <div className="header">{e.name}</div>
+              <div className="description">
+              </div>
             </div>
           </div>
-          <Link to={`/dataset/${e.id}`} id={e.id} className="ui button primary attached bottom">View Dataset</Link>
-        </div>
-      );
+        )
+      }
     }.bind(this))
     return (
       <div className="ui cards">

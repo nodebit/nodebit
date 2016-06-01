@@ -42,6 +42,7 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
   'get /data/:id': 'DataController.findRecord',
+  'get /data/plugins/:id': 'DataController.findPluginRecord',
   'put /data/:id/sql': 'DataController.updateSql',
   'get /data/:id/stop': 'DataController.stop',
   'post /data/:id/parameters': 'DataController.createParameter',

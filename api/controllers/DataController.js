@@ -1,5 +1,5 @@
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
-
+var fs = require('fs')
 /**
  * DataController
  *
@@ -63,20 +63,32 @@ module.exports = {
 					actionUtil.subscribeDeep(req, record);
 				});
 			}
-
-			res.ok(matchingRecords);
+			
+			var d = __dirname.replace("controllers","services")
+			fs.readdir(d, function (err, files) {
+				var files = files.filter(function (file) {
+					return file.indexOf("LifecycleService.js")	!== -1
+				}).map(function (file) {
+					var pluginName = file.replace("LifecycleService.js", "")	
+				  return  {id: 'plugin/' + pluginName.toLowerCase(), name: pluginName, lifecycle: true}
+				})
+				var allRecords = matchingRecords.concat(files)
+				res.ok(allRecords);
+				
+			})	
+				
 		});
 	},
   findRecord: function(req, res) {
-		// set a default connection pool
-
-  	console.log(req.socket.id)
     Data.findOne({id: req.param('id')}).exec(function found(err, record) {
 			record.withData(req, function (complete) {
 				res.ok(complete);
 			});
     });
   },
+	findPluginRecord: function(req, res) {
+		res.ok({"plugin": true})
+	},
 	updateSql: function (req, res) {
 			console.log(req.body);
 			Data.update({id: req.params.id}, {sql: req.body.sql }).exec(function created(err, updated) {
