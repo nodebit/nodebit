@@ -23,6 +23,7 @@ RUN git clone https://github.com/nodebit/nodebit
 WORKDIR /app/nodebit
 RUN npm install
 RUN chmod +x start.sh
+RUN node node_modules/webpack/bin/webpack.js
 
 EXPOSE 1337
 CMD nohup mongod &
