@@ -9,7 +9,7 @@ The fastest way to get up and running is with docker
 
 Next add a user with 
 
-`curl localhost:1337/users curl -H "Content-Type: application/json" -X POST -d '{"email":"user@email.com", "password": "password"}' http://localhost:1337/auth/signup`
+`curl localhost:1337/users -H "Content-Type: application/json" -X POST -d '{"email":"user@email.com", "password": "password"}' http://localhost:1337/auth/signup`
 
 You should now be able to login at http://localhost:1337
 
