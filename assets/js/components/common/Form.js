@@ -15,16 +15,15 @@ export default class SingleValueForm extends Component {
     } else {
       this.props.submit(this.refs.name.value)
     }
-    this.refs.name.value = ""
+    this.refs.name.blur()
   }
 
   render() {
-    const { initialValue, id } = this.props
+    const { initialValue, id, type} = this.props
     return (
       <form className="ui form" onSubmit={this.submit}>
         <div className="inline fields">
-          <input type="text" id={id} ref="name" defaultValue={initialValue}/>
-          <input type="submit" value="Save" className="ui button"/>
+          <input type="text" id={id} ref="name" defaultValue={initialValue} className={type}/>
         </div>
       </form>
     )

@@ -10,6 +10,8 @@ import DatasetInformation from '../components/dataset/DatasetInformation'
 import DatasetData from '../components/dataset/DatasetData'
 import DatasetOutput from '../components/dataset/DatasetOutput'
 
+import JsonTable from 'react-json-table'
+
 class Dataset extends Component {
 
   constructor(props) {
@@ -114,9 +116,8 @@ class Dataset extends Component {
       }
       block = (
         <div className="ui grid">
-              {error}
+          {error}
           <div className="row">
-            <div className="three wide column">
               <DatasetInformation
                 {...dataset}
                 sources={sources}
@@ -125,16 +126,20 @@ class Dataset extends Component {
                 updateParameter={this.updateParameter}
                 removeParameter={this.removeParameter}
               />
+          </div>
+          <div className="row">
+            <DatasetData
+              {...dataset}
+              updateSQL={this.updateSQL}
+            />
+          </div>
+          <div className="row">
+            <div className="sixteen column wide scroll">
+              <JsonTable rows={dataset.data} columns={Object.keys(dataset.data[0])} className="dataTable"/>
             </div>
-            <div className="six wide column">
-              <DatasetData
-                {...dataset}
-                updateSQL={this.updateSQL}
-              />
-            </div>
-            <div className="seven wide column">
-              {output}
-            </div>
+          </div>
+          <div className="row">
+            {output}
           </div>
         </div>
       )
