@@ -14,6 +14,14 @@ module.exports = {
     source: {
       model: 'source'
     },
+    /*
+    We are going to need to figure out how to push and rexecute only pieces of the 
+    component structure 
+    
+    componentTree 
+      -sourcetransformation output v
+      -transformation should start from previous dataset and only reload belwo
+    */
     withDataAndParams: function(raw_params, req, callback) {
       var obj = this.toObject();
       if (typeof obj.source !== "undefined") {

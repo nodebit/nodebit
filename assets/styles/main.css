@@ -57,6 +57,7 @@
 
 .scroll {
   overflow:scroll;
+  max-height: 500px;
 }
 
 .textEditor {

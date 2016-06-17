@@ -84,18 +84,26 @@ class Dataset extends Component {
 
 
   render() {
-    const {dataset, sources} = this.props
+    const {dataset} = this.props
     var block
     if (!_.isEmpty(dataset)) {
-      var output;
+      var output
+      var data_grid
       if (typeof dataset.data !== "undefined" && dataset.data.length > 0) {
         output = (
-          <div>
             <DatasetOutput
               dataset={dataset}
               refreshDataset={this.refreshDataset}
               updateDataset={this.updateDataset}
             />
+        )
+        data_grid = (
+          <div className="ui grid">
+            <div className="row">
+              <div className="sixteen column wide scroll">
+                <JsonTable rows={dataset.data} columns={Object.keys(dataset.data[0])} className="dataTable"/>
+              </div>
+            </div>
           </div>
         )
       }
@@ -115,32 +123,29 @@ class Dataset extends Component {
         )
       }
       block = (
-        <div className="ui grid">
-          {error}
-          <div className="row">
-              <DatasetInformation
-                {...dataset}
-                sources={sources}
-                updateDataset={this.updateDataset}
-                createParameter={this.createParameter}
-                updateParameter={this.updateParameter}
-                removeParameter={this.removeParameter}
-              />
-          </div>
-          <div className="row">
-            <DatasetData
-              {...dataset}
-              updateSQL={this.updateSQL}
-            />
-          </div>
-          <div className="row">
-            <div className="sixteen column wide scroll">
-              <JsonTable rows={dataset.data} columns={Object.keys(dataset.data[0])} className="dataTable"/>
+        <div>
+          <div className="ui grid">
+            {error}
+            <div className="row">
+                <DatasetInformation
+                  {...dataset}
+                  updateDataset={this.updateDataset}
+                  createParameter={this.createParameter}
+                  updateParameter={this.updateParameter}
+                  removeParameter={this.removeParameter}
+                />
             </div>
           </div>
-          <div className="row">
-            {output}
+          <div className="ui grid">
+            <div className="row">
+              <DatasetData
+                {...dataset}
+                updateSQL={this.updateSQL}
+              />
+            </div>
           </div>
+          {data_grid}
+          {output}
         </div>
       )
     } else {

@@ -57,9 +57,7 @@ export default class Chart extends Component {
     const {controls, id} = this.props
     const plotId = "plot-" + id
     return (
-      <div>
-        <div id={plotId} width="500" height="300"></div>
-      </div>
+      <div id={plotId} width="500" height="300"></div>
     )
   }
 
