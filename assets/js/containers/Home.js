@@ -7,7 +7,6 @@ import {server} from '../server'
 
 import DashboardList from '../components/home/DashboardList'
 import DatasetList from '../components/home/DatasetList'
-import SourceList from '../components/home/SourceList'
 
 class Home extends Component {
 
@@ -100,20 +99,28 @@ class Home extends Component {
   render() {
     console.log(this.props)
     return (
-      <div className="paddedContent">
-        <DashboardList
-          dashboards={this.props.dashboards}
-          createDashboard={this.createDashboard}
-          deleteDashboard={this.deleteDashboard}
-        />
-        <DatasetList
-          datasets={this.props.datasets}
-          createDataset={this.createDataset}
-          deleteDataset={this.deleteDataset}
-          sources={this.props.sources}
-          createSource={this.createSource}
-          deleteSource={this.deleteSource}
-        />
+      <div className="ui grid">
+        <div className="row">
+          <div className="column eight wide">
+            <h2>Analysis</h2>
+            <DatasetList
+              datasets={this.props.datasets}
+              createDataset={this.createDataset}
+              deleteDataset={this.deleteDataset}
+              sources={this.props.sources}
+              createSource={this.createSource}
+              deleteSource={this.deleteSource}
+            />
+          </div>
+          <div className="column eight wide">
+            <h2>Presentation</h2>
+            <DashboardList
+              dashboards={this.props.dashboards}
+              createDashboard={this.createDashboard}
+              deleteDashboard={this.deleteDashboard}
+            />
+          </div>
+        </div>
       </div>
     )
   }
