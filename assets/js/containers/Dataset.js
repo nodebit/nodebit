@@ -89,6 +89,9 @@ class Dataset extends Component {
     if (!_.isEmpty(dataset)) {
       var output
       var data_grid
+      var step_type
+      
+  
       if (typeof dataset.data !== "undefined" && dataset.data.length > 0) {
         output = (
             <DatasetOutput
@@ -96,6 +99,19 @@ class Dataset extends Component {
               refreshDataset={this.refreshDataset}
               updateDataset={this.updateDataset}
             />
+        )
+        
+        step_type = (
+          <div className="ui grid">
+            <div className="row">
+              <div className="eight wide column">
+                Output
+              </div>
+              <div className="eight wide column">
+                Transformation
+              </div>
+            </div>
+          </div>
         )
         data_grid = (
           <div className="ui grid">
@@ -123,7 +139,7 @@ class Dataset extends Component {
         )
       }
       block = (
-        <div>
+        <div className="editorFlow">
           <div className="ui grid">
             {error}
             <div className="row">
@@ -145,6 +161,7 @@ class Dataset extends Component {
             </div>
           </div>
           {data_grid}
+          {step_type}
           {output}
         </div>
       )

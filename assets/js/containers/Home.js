@@ -39,12 +39,12 @@ class Home extends Component {
   }
 
   getDatasets() {
-    server(this.props, 'get', "/data", {select: ["url", "name", "id", "updatedAt"]}, function (data) {
+    server(this.props, 'get', "/data", {select: ["url", "name", "id", "updatedAt", "source"]}, function (data) {
       this.props.dispatch({ type: 'RECIEVE_ALL_DATASETS', datasets: data})
     }.bind(this))
   }
-  createDataset() {
-    server(this.props, 'post', "/data", { type: "DB", chart: { value: [] } }, function (r,p) {
+  createDataset(source) {
+    server(this.props, 'post', "/data", { source: source }, function (r,p) {
       if (p.statusCode == 201) {
         console.log("should redirect")
         this.props.dispatch(push("/dataset/" + r.data.id))
@@ -110,8 +110,6 @@ class Home extends Component {
           datasets={this.props.datasets}
           createDataset={this.createDataset}
           deleteDataset={this.deleteDataset}
-        />
-        <SourceList
           sources={this.props.sources}
           createSource={this.createSource}
           deleteSource={this.deleteSource}

@@ -10,11 +10,17 @@ export default class URL extends Component {
 
   updateSource(e) {
     e.preventDefault()
+    var url = this.refs.url.value
+    var name = this.refs.name.value
+    
     const postable = {
-      url: this.refs.url.value,
-      name: this.refs.name.value
+      url: url,
+      name: name
     }
-    this.props.updateSource(postable)
+    
+    if (name != "" && url != "") {
+      this.props.updateSource(postable, true)
+    }
   }
 
   render() {
@@ -30,7 +36,7 @@ export default class URL extends Component {
             <label>URL: </label>
             <input type="text" ref="url" defaultValue={source.url}/>
           </div>
-          <button className="ui button" type="submit">Submit</button>
+          <button className="ui button primary" type="submit">Submit</button>
         </form>
       </div>
     )

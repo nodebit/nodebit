@@ -61,15 +61,6 @@ export default class DatasetOutput extends Component {
     return (
       <div className="ui grid">
         <div className="row">
-          <div className="eight wide column">
-            <select ref="output" onChange={this.updateOutput} defaultValue={output}>
-              <option value=""></option>
-              {avaliable_outputs}
-            </select>
-          </div>
-          <div className="eight wide column">
-            Transformations
-          </div>
           <div className="sixteen wide column">
             {component}
           </div>

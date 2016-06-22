@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
+import {push} from 'react-router-redux'
 
 import Postgres from '../components/source/plugins/Postgres'
 import URL from '../components/source/plugins/URL'
@@ -35,9 +36,12 @@ class Source extends Component {
     }.bind(this))
   }
 
-  updateSource(postable) {
+  updateSource(postable, done=false) {
     server(this.props, 'put', "/source/" + this.props.params.id, postable, function (data) {
       this.getSource()
+      if (done) {
+        this.props.dispatch(push("/"))
+      } 
     }.bind(this))
   }
 
