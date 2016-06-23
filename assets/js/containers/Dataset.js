@@ -12,10 +12,26 @@ import DatasetOutput from '../components/dataset/DatasetOutput'
 
 import JsonTable from 'react-json-table'
 
+var req = require.context("../components/dataset/plugins", true)
+
 class Dataset extends Component {
 
   constructor(props) {
     super(props)
+    
+    this.components = {}
+
+    var files = req.keys()
+    files.forEach(function (file) {
+      if (file.indexOf("/Controls.js") !== -1) {
+        var componentId = req.resolve(file)
+        var component = __webpack_require__(componentId)
+        var matches = file.match(/nodebit-output-([^\/\\]+)\/Controls.js$/)
+        var componentType = matches[1]
+        this.components[componentType] = component
+      }
+    }.bind(this))
+    
     this.updateSQL = this.updateSQL.bind(this)
     this.updateDataset = this.updateDataset.bind(this)
     this.createParameter = this.createParameter.bind(this)
@@ -23,6 +39,7 @@ class Dataset extends Component {
     this.removeParameter = this.removeParameter.bind(this)
 
     this.refreshDataset = this.refreshDataset.bind(this)
+    this.updateOutput = this.updateOutput.bind(this)
   }
 
   componentWillMount() {
@@ -81,6 +98,20 @@ class Dataset extends Component {
     this.updateDataset(postable, true)
     this.props.dispatch({type: "AWAITING_DATASET"})
   }
+  
+  updateOutput() {
+    const outputType = this.refs.output.value;
+    console.log(outputType)
+    var datasetUpdates = {output: outputType}
+
+    // initialization values
+    if (outputType == "statistic" && typeof this.props.dataset.statistic == "undefined") {
+      datasetUpdates.statistic = { label: '', value: '' }
+    } else if (outputType == "chart" && typeof this.props.dataset.chart == "undefined") {
+      datasetUpdates.chart =  { value: [] }        
+    }
+    this.updateDataset(datasetUpdates, true)
+  }
 
 
   render() {
@@ -90,7 +121,6 @@ class Dataset extends Component {
       var output
       var data_grid
       var step_type
-      
   
       if (typeof dataset.data !== "undefined" && dataset.data.length > 0) {
         output = (
@@ -100,12 +130,22 @@ class Dataset extends Component {
               updateDataset={this.updateDataset}
             />
         )
-        
+        /*
+        if (typeof output == "undefined") {
+          output = ""
+        }
+        */
+        var avaliable_outputs = Object.keys(this.components).map(function (key) {
+          return (<option value={key}>{key}</option>)
+        })
         step_type = (
           <div className="ui grid">
             <div className="row">
               <div className="eight wide column">
                 Output
+                <select onChange={this.updateOutput} defaultValue={dataset.output} ref="output">
+                  {avaliable_outputs}
+                </select>
               </div>
               <div className="eight wide column">
                 Transformation
@@ -146,20 +186,16 @@ class Dataset extends Component {
                 <DatasetInformation
                   {...dataset}
                   updateDataset={this.updateDataset}
-                  createParameter={this.createParameter}
-                  updateParameter={this.updateParameter}
-                  removeParameter={this.removeParameter}
                 />
             </div>
           </div>
-          <div className="ui grid">
-            <div className="row">
-              <DatasetData
-                {...dataset}
-                updateSQL={this.updateSQL}
-              />
-            </div>
-          </div>
+          <DatasetData
+            {...dataset}
+            updateSQL={this.updateSQL}
+            createParameter={this.createParameter}
+            updateParameter={this.updateParameter}
+            removeParameter={this.removeParameter}
+          />
           {data_grid}
           {step_type}
           {output}
