@@ -43,15 +43,21 @@ export default class DatasetList extends Component {
         var subset = key[1].map(function (dataset) {
            if (_.isUndefined(dataset.lifecycle)) {
             return (
-              <div>
-                <Link to={`/dataset/${dataset.id}`} id={dataset.id} className="">{dataset.name}</Link> | 
-                {moment(dataset.updatedAt).fromNow()} | <a onClick={this.deleteDataset} id={dataset.id}>Delete</a>
+              <div className="item">
+                <div className="content">
+                  <div className="header">
+                      <Link to={`/dataset/${dataset.id}`} id={dataset.id} className="">{dataset.name}</Link>
+                    </div>
+                    <div className="description">
+                      {moment(dataset.updatedAt).fromNow()} | <a onClick={this.deleteDataset} id={dataset.id}>Delete</a>
+                    </div>
+                  </div>
               </div>
             )
            } else {
             return (
-              <div>
-                {dataset.name} -- Lifecycle
+              <div className="item">
+                {dataset.name}
               </div>
             )
            }
@@ -61,19 +67,23 @@ export default class DatasetList extends Component {
           namer = namer.name
         }
         return (
-          <div className="">
-            <h3><Link to={`/source/${key[0]}`} className="">{namer}</Link></h3>
-            <span id={key[0]} onClick={this.deleteSource}>Delete</span> 
-            <a className="" id={key[0]} onClick={this.createDataset}>+Dataset</a>
-            <hr/>
-            {subset} 
+          <div className="ui segment vertical">
+            <h3>
+              <Link to={`/source/${key[0]}`} className="">{namer}</Link>
+            </h3>
+            <a className="ui button tiny positive" id={key[0]} onClick={this.createDataset}>Create {namer} Dataset</a>
+            <a id={key[0]} className="ui red basic button tiny" onClick={this.deleteSource}>Delete All</a> 
+            <div className="ui list relaxed large">
+              {subset} 
+            </div>
           </div>
         )
       }.bind(this))
     } 
     return (
       <div className="">
-        <a className="item content fullPlus" onClick={createSource}>+Source</a>
+        <a className="ui button primary" onClick={createSource}>Add Source</a>
+        <hr/>
         {items}
       </div>
     )

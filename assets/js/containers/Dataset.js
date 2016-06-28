@@ -130,15 +130,12 @@ class Dataset extends Component {
               updateDataset={this.updateDataset}
             />
         )
-        /*
-        if (typeof output == "undefined") {
-          output = ""
-        }
-        */
+
         var avaliable_outputs = [(<option value=""></option>)]
         Object.keys(this.components).forEach(function (key) {
           avaliable_outputs.push(<option value={key}>{key}</option>)
         })
+
         step_type = (
           <div className="ui grid">
             <div className="row">
