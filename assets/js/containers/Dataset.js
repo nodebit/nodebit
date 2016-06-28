@@ -135,8 +135,9 @@ class Dataset extends Component {
           output = ""
         }
         */
-        var avaliable_outputs = Object.keys(this.components).map(function (key) {
-          return (<option value={key}>{key}</option>)
+        var avaliable_outputs = [(<option value=""></option>)]
+        Object.keys(this.components).forEach(function (key) {
+          avaliable_outputs.push(<option value={key}>{key}</option>)
         })
         step_type = (
           <div className="ui grid">
