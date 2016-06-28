@@ -10,7 +10,7 @@ export default class DatasetChart extends Component {
     var block;
     var block2;
     block = (
-      <div className="column three wide">
+      <div className="row">
         <ChartControls
           refreshDataset={refreshDataset}
           updateDataset={updateDataset}
@@ -20,7 +20,7 @@ export default class DatasetChart extends Component {
       </div>
     )
     block2 = (
-      <div className="column thirteen wide">
+      <div className="row">
         <Display
           controls={controls}
           data={data}

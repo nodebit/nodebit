@@ -1,32 +1,28 @@
 import React, {Component, PropTypes} from 'react'
 
-import JsonTable from 'react-json-table'
 import SQLEditor from '../../components/SQLEditor'
+import DatasetParameters from './DatasetParameters'
 
 export default class DatasetData extends Component {
 
   render() {
-    const {updateSQL, sql, data} = this.props
-    var table;
-    if (typeof data !== "undefined" && data.length > 0) {
-      table = (
-        <div className="sixteen column wide scroll">
-          <JsonTable rows={data} columns={Object.keys(data[0])} className="dataTable"/>
-        </div>
-      )
-    }
+    const {updateSQL, sql, data, createParameter, updateParameter, removeParameter, parameters} = this.props
     return (
-      <div className="row">
-          <div className="sixteen column wide">
+      <div className="ui grid">
+        <div className="row">
+          <div className="twelve wide column">
             <SQLEditor sql={sql} updateSQL={updateSQL}/>
           </div>
-          {table}
+          <div className="four wide column">
+            <DatasetParameters
+                createParameter={createParameter}
+                updateParameter={updateParameter}
+                removeParameter={removeParameter}
+                parameters={parameters}
+            />
+          </div>
+        </div>
       </div>
     )
   }
-}
-
-DatasetData.propTypes = {
-  sql: PropTypes.string,
-  data: PropTypes.array
 }

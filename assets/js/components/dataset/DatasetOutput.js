@@ -19,20 +19,6 @@ export default class DatasetOutput extends Component {
         this.components[componentType] = component
       }
     }.bind(this))
-
-    this.updateOutput = this.updateOutput.bind(this)
-  }
-
-  updateOutput() {
-    const outputType = this.refs.output.value;
-    console.log(outputType)
-    var datasetUpdates = {output: outputType}
-
-    // I will probably want to do this with the charting too
-    if (outputType == "statistic" && typeof this.props.dataset.statistic == "undefined") {
-      datasetUpdates.statistic = {label: '', value: ''}
-    }
-    this.props.updateDataset(datasetUpdates, true)
   }
 
   render() {
@@ -55,16 +41,13 @@ export default class DatasetOutput extends Component {
                      />
       }
     }.bind(this))
-    if (typeof output == "undefined") {
-      output = ""
-    }
     return (
-      <div>
-        <select ref="output" onChange={this.updateOutput} defaultValue={output}>
-          <option value=""></option>
-          {avaliable_outputs}
-        </select>
-        {component}
+      <div className="ui grid">
+        <div className="row">
+          <div className="sixteen wide column">
+            {component}
+          </div>
+        </div>
       </div>
     )
   }

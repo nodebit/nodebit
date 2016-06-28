@@ -1,3 +1,10 @@
+#content {
+  background: #efefef;  
+}
+.editorFlow {
+  width: 960px;
+  margin:auto;  
+}
 #content > div {
   padding: 20px;
 }
@@ -14,6 +21,12 @@
 }
 .darken {
   background:rgb(240, 240, 240);
+}
+.fieldHeader {
+  font-size:28px !important;
+  font-weight:bold !important;
+  border:none !important;
+  padding:0px !important;
 }
 .production {
   background: #FCFCFC;
@@ -51,6 +64,15 @@
 
 .scroll {
   overflow:scroll;
+  max-height: 500px;
+}
+
+.ui.grid + .ui.grid {
+  border-top: 15px solid #efefef; 
+}
+
+.ui.grid {
+  background: white;
 }
 
 .textEditor {
